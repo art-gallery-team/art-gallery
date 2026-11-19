@@ -1,6 +1,22 @@
 import { supabase } from './supabaseClient';
 import type { Lot } from '../types';
 
+interface DbLot {
+  id: string;
+  title: string;
+  author: string;
+  style: string;
+  year: number;
+  description: string;
+  image_url: string;
+  start_price: number;
+  current_price: number;
+  min_step: number;
+  status: 'active' | 'sold';
+  highest_bidder_id: string | null;
+  created_at: string;
+}
+
 export async function fetchLots(): Promise<Lot[]> {
   const { data, error } = await supabase
     .from('lots')
@@ -11,7 +27,9 @@ export async function fetchLots(): Promise<Lot[]> {
     throw new Error(error.message);
   }
 
-  return data.map((row) => ({
+  const dbLots = (data || []) as DbLot[];
+
+  return dbLots.map((row) => ({
     id: row.id,
     title: row.title,
     author: row.author,
