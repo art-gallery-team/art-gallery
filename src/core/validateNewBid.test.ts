@@ -16,11 +16,14 @@ describe('validateNewBid', () => {
     expect(() => validateNewBid(1000, 1100, 100, 'sold', null)).toThrow('Lot is not active');
   });
 
-  it('should throw an error for invalid bid values (<= 0 or NaN)', () => {
+  it('should throw an error for invalid bid values (<= 0, NaN or Infinity)', () => {
     expect(() => validateNewBid(1000, -50, 100, 'active', null)).toThrow(
       'Bid must be a positive number'
     );
     expect(() => validateNewBid(1000, NaN, 100, 'active', null)).toThrow(
+      'Bid must be a positive number'
+    );
+    expect(() => validateNewBid(1000, Infinity, 100, 'active', null)).toThrow(
       'Bid must be a positive number'
     );
   });

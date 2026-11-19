@@ -5,5 +5,6 @@ export function calculateCheckoutTotal(lotPrices: number[], promoCode: string = 
   const isVip = promoCode.trim().toUpperCase() === 'VIPART';
   const commissionRate = isVip ? 0 : 0.1;
 
-  return sum + sum * commissionRate;
+  const total = sum * (1 + commissionRate);
+  return Number(total.toFixed(2));
 }

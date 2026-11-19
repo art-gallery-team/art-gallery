@@ -8,7 +8,7 @@ export function validateNewBid(
   if (lotStatus !== 'active') {
     throw new Error('Lot is not active');
   }
-  if (isNaN(newBid) || newBid <= 0) {
+  if (!Number.isFinite(newBid) || newBid <= 0) {
     throw new Error('Bid must be a positive number');
   }
   if (userMaxBid !== null && userMaxBid >= currentBid) {

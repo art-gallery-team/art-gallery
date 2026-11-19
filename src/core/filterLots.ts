@@ -15,8 +15,8 @@ export function filterLots(
 
     const matchesStyle = !style || style === 'all' || lot.style === style;
 
-    const matchesMinPrice = minPrice === null || lot.price >= minPrice;
-    const matchesMaxPrice = maxPrice === null || lot.price <= maxPrice;
+    const matchesMinPrice = minPrice === null || lot.currentPrice >= minPrice;
+    const matchesMaxPrice = maxPrice === null || lot.currentPrice <= maxPrice;
 
     return matchesQuery && matchesStyle && matchesMinPrice && matchesMaxPrice;
   });

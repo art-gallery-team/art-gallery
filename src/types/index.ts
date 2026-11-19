@@ -5,6 +5,12 @@ export interface Lot {
   title: string;
   author: string;
   style: string;
-  price: number;
+  year: number;
+  description: string;
+  imageUrl: string;
+  startPrice: number;
+  currentPrice: number;
+  minStep: number;
   status: 'active' | 'sold' | 'closed';
+  highestBidderId?: string | null;
 }
