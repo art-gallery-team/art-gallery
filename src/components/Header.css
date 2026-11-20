@@ -1,0 +1,82 @@
+.app-header {
+  border-bottom: 1px solid #2d2d3a;
+  background: #14141a;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.app-header__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.app-header__logo {
+  background: none;
+  border: none;
+  color: #d4af37;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  padding: 0;
+}
+
+.app-header__nav {
+  display: flex;
+  gap: 8px;
+}
+
+.app-header__link {
+  background: transparent;
+  border: none;
+  color: #9ca3af;
+  font-size: 15px;
+  font-weight: 500;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.app-header__link:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.app-header__link--active {
+  color: #d4af37;
+  background: rgba(212, 175, 55, 0.12);
+}
+
+.app-header__auth {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.app-header__user {
+  font-size: 13px;
+  color: #d1d5db;
+}
+
+.app-header__btn {
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: 1px solid #d4af37;
+  background: #d4af37;
+  color: #111116;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.app-header__btn--outline {
+  background: transparent;
+  color: #d4af37;
+}

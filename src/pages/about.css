@@ -1,0 +1,111 @@
+.about-page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 48px 20px 64px;
+}
+
+.about-hero {
+  text-align: center;
+  margin-bottom: 56px;
+}
+
+.about-hero__badge {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(212, 175, 55, 0.14);
+  color: #d4af37;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.about-hero__title {
+  margin: 0 0 16px;
+  font-size: clamp(28px, 4vw, 42px);
+  line-height: 1.2;
+}
+
+.about-hero__desc {
+  max-width: 660px;
+  margin: 0 auto 28px;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #9ca3af;
+}
+
+.about-hero__cta {
+  padding: 14px 28px;
+  border: none;
+  border-radius: 8px;
+  background: #d4af37;
+  color: #111116;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    transform 0.15s,
+    opacity 0.2s;
+}
+
+.about-hero__cta:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+.about-team__title {
+  text-align: center;
+  font-size: 24px;
+  margin: 0 0 24px;
+}
+
+.about-team__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.team-card {
+  background: #18181f;
+  border: 1px solid #2d2d3a;
+  border-radius: 12px;
+  padding: 24px;
+}
+
+.team-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.team-card__name {
+  margin: 0;
+  font-size: 20px;
+}
+
+.team-card__github {
+  color: #d4af37;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.team-card__github:hover {
+  text-decoration: underline;
+}
+
+.team-card__role {
+  margin: 0 0 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #a78bfa;
+}
+
+.team-card__contrib {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.55;
+  color: #d1d5db;
+}
