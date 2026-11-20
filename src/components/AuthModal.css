@@ -1,0 +1,134 @@
+.auth-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 10, 14, 0.78);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 1000;
+}
+
+.auth-modal {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  background: #18181f;
+  color: #f3f4f6;
+  border: 1px solid #2d2d3a;
+  border-radius: 12px;
+  padding: 28px 24px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
+}
+
+.auth-modal__close {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  background: transparent;
+  border: none;
+  color: #9ca3af;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.auth-modal__close:hover {
+  color: #ffffff;
+}
+
+.auth-modal__title {
+  margin: 0 0 6px;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.auth-modal__subtitle {
+  margin: 0 0 20px;
+  font-size: 14px;
+  color: #9ca3af;
+}
+
+.auth-modal__form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.auth-modal__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.auth-modal__field label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #d1d5db;
+}
+
+.auth-modal__field input {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #374151;
+  background: #111116;
+  color: #f9fafb;
+  font-size: 14px;
+}
+
+.auth-modal__field input:focus {
+  outline: none;
+  border-color: #d4af37;
+}
+
+.auth-modal__error {
+  font-size: 12px;
+  color: #f87171;
+  min-height: 16px;
+}
+
+.auth-modal__server-error {
+  font-size: 13px;
+  color: #f87171;
+  text-align: center;
+}
+
+.auth-modal__submit {
+  margin-top: 4px;
+  padding: 11px;
+  border: none;
+  border-radius: 8px;
+  background: #d4af37;
+  color: #111116;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.auth-modal__submit:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.auth-modal__submit:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.auth-modal__footer {
+  margin-top: 18px;
+  text-align: center;
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.auth-modal__switch-btn {
+  background: none;
+  border: none;
+  color: #d4af37;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+}
