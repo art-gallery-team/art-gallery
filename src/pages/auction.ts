@@ -3,7 +3,6 @@ import { createLotCard } from '../components/lotCard';
 import { createElement } from '../utils/dom';
 import { filterLots } from '../core/filterLots';
 import { debounce } from '../utils/debounce';
-import type { Lot } from '../types';
 
 export async function renderAuctionHall(container: HTMLElement): Promise<void> {
   container.replaceChildren();
@@ -12,11 +11,6 @@ export async function renderAuctionHall(container: HTMLElement): Promise<void> {
 
   try {
     const allLots = await fetchLots();
-    allLots.sort((a, b) => {
-      if (a.status === 'active' && b.status !== 'active') return -1;
-      if (a.status !== 'active' && b.status === 'active') return 1;
-      return b.currentPrice - a.currentPrice;
-    });
     container.replaceChildren();
 
     const title = createElement('h1', 'page-title', 'Auction Hall');
@@ -38,36 +32,55 @@ export async function renderAuctionHall(container: HTMLElement): Promise<void> {
       styleSelect.append(opt);
     });
 
-    controls.append(searchInput, styleSelect);
+    const sortSelect = createElement('select', 'auction-controls__select');
+
+    const sortDefault = createElement('option', '', 'Default (Active first)');
+    sortDefault.value = 'default';
+
+    const sortPriceDesc = createElement('option', '', 'Price: High to Low');
+    sortPriceDesc.value = 'price-desc';
+
+    const sortPriceAsc = createElement('option', '', 'Price: Low to High');
+    sortPriceAsc.value = 'price-asc';
+
+    sortSelect.append(sortDefault, sortPriceDesc, sortPriceAsc);
+
+    controls.append(searchInput, styleSelect, sortSelect);
     const grid = createElement('div', 'lots-grid');
 
-    const updateGrid = (lotsToRender: Lot[]) => {
+    const updateGrid = (): void => {
+      const query = searchInput.value;
+      const selectedStyle = styleSelect.value;
+      const sortBy = sortSelect.value;
+
+      let result = filterLots(allLots, query, selectedStyle, null, null);
+
+      result = [...result].sort((a, b) => {
+        if (sortBy === 'price-desc') return b.currentPrice - a.currentPrice;
+        if (sortBy === 'price-asc') return a.currentPrice - b.currentPrice;
+
+        if (a.status === 'active' && b.status !== 'active') return -1;
+        if (a.status !== 'active' && b.status === 'active') return 1;
+        return b.currentPrice - a.currentPrice;
+      });
+
       grid.replaceChildren();
-      if (lotsToRender.length === 0) {
+      if (result.length === 0) {
         grid.append(createElement('p', 'empty-message', 'No lots found matching your criteria.'));
         return;
       }
-      lotsToRender.forEach((lot) => {
+
+      result.forEach((lot) => {
         grid.append(createLotCard(lot, () => renderAuctionHall(container)));
       });
     };
 
-    updateGrid(allLots);
+    updateGrid();
 
-    const handleSearch = debounce(() => {
-      const query = searchInput.value;
-      const selectedStyle = styleSelect.value;
-      const filtered = filterLots(allLots, query, selectedStyle, null, null);
-      updateGrid(filtered);
-    }, 300);
-
+    const handleSearch = debounce(updateGrid, 300);
     searchInput.addEventListener('input', handleSearch);
-    styleSelect.addEventListener('change', () => {
-      const query = searchInput.value;
-      const selectedStyle = styleSelect.value;
-      const filtered = filterLots(allLots, query, selectedStyle, null, null);
-      updateGrid(filtered);
-    });
+    styleSelect.addEventListener('change', updateGrid);
+    sortSelect.addEventListener('change', updateGrid);
 
     container.append(title, controls, grid);
   } catch (error) {
