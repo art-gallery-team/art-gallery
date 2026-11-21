@@ -56,11 +56,15 @@ export async function renderAuctionHall(container: HTMLElement): Promise<void> {
       let result = filterLots(allLots, query, selectedStyle, null, null);
 
       result = [...result].sort((a, b) => {
+        const aIsActive = a.status === 'active';
+        const bIsActive = b.status === 'active';
+
+        if (aIsActive && !bIsActive) return -1;
+        if (!aIsActive && bIsActive) return 1;
+
         if (sortBy === 'price-desc') return b.currentPrice - a.currentPrice;
         if (sortBy === 'price-asc') return a.currentPrice - b.currentPrice;
 
-        if (a.status === 'active' && b.status !== 'active') return -1;
-        if (a.status !== 'active' && b.status === 'active') return 1;
         return b.currentPrice - a.currentPrice;
       });
 
