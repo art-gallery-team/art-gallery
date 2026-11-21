@@ -43,13 +43,17 @@ export function createLotCard(lot: Lot, onBidSuccess: () => void): HTMLElement {
         openAuthModal({
           onSuccess: () => {
             openBidModal(lot.title, lot.currentPrice, lot.minStep, async (amount) => {
-              await placeBid(lot.id, user.id, amount);
-              onBidSuccess();
+              const currentUser = await getCurrentUser();
+              if (currentUser) {
+                await placeBid(lot.id, currentUser.id, amount);
+                onBidSuccess();
+              }
             });
           },
         });
         return;
       }
+
       openBidModal(lot.title, lot.currentPrice, lot.minStep, async (amount) => {
         await placeBid(lot.id, user.id, amount);
         onBidSuccess();
