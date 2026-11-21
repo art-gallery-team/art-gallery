@@ -21,7 +21,7 @@ export async function fetchLots(): Promise<Lot[]> {
   const { data, error } = await supabase
     .from('lots')
     .select('*')
-    .order('created_at', { ascending: false });
+    .order('current_price', { ascending: false });
 
   if (error) {
     throw new Error(error.message);
