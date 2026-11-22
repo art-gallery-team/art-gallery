@@ -5,6 +5,7 @@ import { openBidModal } from './bidModal';
 import { openAuthModal } from './AuthModal';
 import { placeBid } from '../api/bidsApi';
 import { getCurrentUser } from '../api/authApi';
+import { showToast } from './toast';
 
 export function createLotCard(lot: Lot, onBidSuccess: () => void): HTMLElement {
   const card = createElement('article', 'lot-card');
@@ -51,6 +52,11 @@ export function createLotCard(lot: Lot, onBidSuccess: () => void): HTMLElement {
             });
           },
         });
+        return;
+      }
+
+      if (lot.highestBidderId === user.id) {
+        showToast('You are already the leading bidder for this lot!', 'warning');
         return;
       }
 
