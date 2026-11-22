@@ -65,7 +65,8 @@
 .bid-card__info {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
   font-size: 1rem;
 }
 
@@ -85,6 +86,7 @@
   font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .bid-card__status--leading {
@@ -95,4 +97,14 @@
 .bid-card__status--outbid {
   background: rgba(239, 68, 68, 0.2);
   color: #f87171;
+}
+
+@media (max-width: 480px) {
+  .profile-list {
+    padding: 0 1rem 3rem;
+  }
+
+  .bid-card {
+    padding: 1.25rem;
+  }
 }
