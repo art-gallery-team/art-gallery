@@ -14,3 +14,12 @@ export interface Lot {
   status: 'active' | 'sold' | 'closed';
   highestBidderId?: string | null;
 }
+
+export interface Bid {
+  id: string;
+  lot_id: string;
+  user_id: string;
+  amount: number;
+  created_at: string;
+  lots?: Lot;
+}
