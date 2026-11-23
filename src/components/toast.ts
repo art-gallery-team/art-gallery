@@ -7,6 +7,13 @@ export function showToast(message: string, type: 'warning' | 'error' = 'warning'
     document.body.append(container);
   }
 
+  const existingToasts = Array.from(container.querySelectorAll('.toast'));
+  const isDuplicate = existingToasts.some((toast) => toast.textContent === message);
+
+  if (isDuplicate) {
+    return;
+  }
+
   const toast = createElement('div', `toast toast--${type}`, message);
   container.append(toast);
 
