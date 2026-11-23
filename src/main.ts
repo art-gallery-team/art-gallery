@@ -1,6 +1,5 @@
 import type { User } from '@supabase/supabase-js';
 import './style.css';
-import './theme.css';
 import { getCurrentUser, onAuthStateChange } from './api/authApi';
 import { openAuthModal } from './components/AuthModal';
 import { createHeader } from './components/Header';

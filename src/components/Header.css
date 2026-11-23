@@ -45,7 +45,7 @@
 }
 
 .app-header__link:hover {
-  color: var(--text-primary);
+  color: var(--text-main);
   background: var(--link-hover);
 }
 
@@ -70,7 +70,7 @@
   border-radius: 6px;
   border: 1px solid var(--accent-primary);
   background: var(--accent-primary);
-  color: var(--bg-page);
+  color: var(--bg-main);
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -88,6 +88,6 @@
 
 .app-header__btn:hover {
   background: var(--link-hover);
-  color: var(--text-primary);
+  color: var(--text-main);
   border-color: var(--accent-primary);
 }
