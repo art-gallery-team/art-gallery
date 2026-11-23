@@ -1,16 +1,24 @@
 import { fetchLots } from '../api/lotsApi';
+import { subscribeToAuctionUpdates } from '../api/realtimeApi';
 import { createLotCard } from '../components/lotCard';
 import { createElement } from '../utils/dom';
 import { filterLots } from '../core/filterLots';
 import { debounce } from '../utils/debounce';
 
+let unsubscribeAuctionRealtime: (() => void) | null = null;
+
 export async function renderAuctionHall(container: HTMLElement): Promise<void> {
+  if (unsubscribeAuctionRealtime) {
+    unsubscribeAuctionRealtime();
+    unsubscribeAuctionRealtime = null;
+  }
+
   container.replaceChildren();
   const loader = createElement('div', 'loader', 'Loading masterpieces...');
   container.append(loader);
 
   try {
-    const allLots = await fetchLots();
+    let allLots = await fetchLots();
     container.replaceChildren();
 
     const title = createElement('h1', 'page-title', 'Auction Hall');
@@ -48,6 +56,15 @@ export async function renderAuctionHall(container: HTMLElement): Promise<void> {
     controls.append(searchInput, styleSelect, sortSelect);
     const grid = createElement('div', 'lots-grid');
 
+    const refreshLotsSilently = async (): Promise<void> => {
+      try {
+        allLots = await fetchLots();
+        updateGrid();
+      } catch (err) {
+        console.error('Failed to refresh lots in realtime:', err);
+      }
+    };
+
     const updateGrid = (): void => {
       const query = searchInput.value;
       const selectedStyle = styleSelect.value;
@@ -75,7 +92,7 @@ export async function renderAuctionHall(container: HTMLElement): Promise<void> {
       }
 
       result.forEach((lot) => {
-        grid.append(createLotCard(lot, () => renderAuctionHall(container)));
+        grid.append(createLotCard(lot, refreshLotsSilently));
       });
     };
 
@@ -87,6 +104,10 @@ export async function renderAuctionHall(container: HTMLElement): Promise<void> {
     sortSelect.addEventListener('change', updateGrid);
 
     container.append(title, controls, grid);
+
+    unsubscribeAuctionRealtime = subscribeToAuctionUpdates(() => {
+      void refreshLotsSilently();
+    });
   } catch (error) {
     container.replaceChildren();
     container.append(

@@ -2,16 +2,25 @@ import './profile.css';
 import type { User } from '@supabase/supabase-js';
 import type { Bid } from '../types';
 import { getUserBids } from '../api/bidsApi';
+import { subscribeToAuctionUpdates } from '../api/realtimeApi';
 import { createBidCard } from '../components/bidCard';
 import { createElement } from '../utils/dom';
 
+let unsubscribeProfileRealtime: (() => void) | null = null;
+
 export async function renderProfilePage(container: HTMLElement, user: User): Promise<void> {
+  if (unsubscribeProfileRealtime) {
+    unsubscribeProfileRealtime();
+    unsubscribeProfileRealtime = null;
+  }
+
   container.replaceChildren();
   const loader = createElement('div', 'loader', 'Loading your profile...');
   container.append(loader);
 
   try {
-    const bids = await getUserBids(user.id);
+    let bids = await getUserBids(user.id);
+    let currentTab: 'active' | 'history' = 'active';
     container.replaceChildren();
 
     const title = createElement('h1', 'page-title', 'Personal Cabinet');
@@ -28,7 +37,8 @@ export async function renderProfilePage(container: HTMLElement, user: User): Pro
 
     const listContainer = createElement('div', 'profile-list');
 
-    const renderList = (tab: 'active' | 'history') => {
+    const renderList = (tab: 'active' | 'history'): void => {
+      currentTab = tab;
       listContainer.replaceChildren();
 
       if (bids.length === 0) {
@@ -60,6 +70,15 @@ export async function renderProfilePage(container: HTMLElement, user: User): Pro
       }
     };
 
+    const refreshBidsSilently = async (): Promise<void> => {
+      try {
+        bids = await getUserBids(user.id);
+        renderList(currentTab);
+      } catch (err) {
+        console.error('Failed to refresh profile bids in realtime:', err);
+      }
+    };
+
     activeTabBtn.addEventListener('click', () => {
       activeTabBtn.classList.add('profile-tabs__btn--active');
       historyTabBtn.classList.remove('profile-tabs__btn--active');
@@ -75,6 +94,10 @@ export async function renderProfilePage(container: HTMLElement, user: User): Pro
     renderList('active');
 
     container.append(title, email, tabsContainer, listContainer);
+
+    unsubscribeProfileRealtime = subscribeToAuctionUpdates(() => {
+      void refreshBidsSilently();
+    });
   } catch (error) {
     container.replaceChildren();
     container.append(createElement('div', 'error-message', 'Failed to load profile data.'));
