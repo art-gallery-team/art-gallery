@@ -66,3 +66,44 @@
   justify-content: flex-end;
   gap: 1rem;
 }
+
+.checkout-form__breakdown {
+  background: rgba(255, 255, 255, 0.03);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.checkout-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.checkout-row:last-child {
+  margin-bottom: 0;
+}
+
+.checkout-form__promo-section {
+  margin-bottom: 1.5rem;
+}
+
+.checkout-form__promo-link {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 0.875rem;
+  padding: 0;
+}
+
+.checkout-form__promo-link:hover {
+  color: var(--text-main);
+}
+
+.checkout-form__promo-input-container {
+  margin-top: 0.5rem;
+}

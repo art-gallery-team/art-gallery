@@ -6,6 +6,7 @@ import { openBidModal } from './bidModal';
 import { openAuthModal } from './AuthModal';
 import { placeBid } from '../api/bidsApi';
 import { getCurrentUser } from '../api/authApi';
+import { showToast } from './toast';
 
 export function createLotCard(lot: Lot, user: User | null, onBidSuccess: () => void): HTMLElement {
   const card = createElement('article', 'lot-card');
@@ -49,6 +50,7 @@ export function createLotCard(lot: Lot, user: User | null, onBidSuccess: () => v
               const u = await getCurrentUser();
               if (u) {
                 await placeBid(lot.id, u.id, amount);
+                showToast('Bid placed successfully!', 'success');
                 onBidSuccess();
               }
             });
@@ -59,6 +61,7 @@ export function createLotCard(lot: Lot, user: User | null, onBidSuccess: () => v
 
       openBidModal(lot.title, lot.currentPrice, lot.minStep, async (amount) => {
         await placeBid(lot.id, currentUser.id, amount);
+        showToast('Bid placed successfully!', 'success');
         onBidSuccess();
       });
     });

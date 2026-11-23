@@ -5,6 +5,7 @@ import { getUserBidStatus } from '../core/getUserBidStatus';
 import { openCheckoutModal } from './checkoutModal';
 import { purchaseLot } from '../api/purchasesApi';
 import { getCurrentUser } from '../api/authApi';
+import { showToast } from './toast';
 
 export function createBidCard(bid: Bid): HTMLElement {
   const card = createElement('div', 'bid-card');
@@ -47,8 +48,15 @@ export function createBidCard(bid: Bid): HTMLElement {
       if (!user) return;
 
       openCheckoutModal(lot.title, lot.currentPrice, async (finalPrice, promo) => {
-        await purchaseLot(lot.id, user.id, finalPrice, promo);
-        window.location.reload();
+        try {
+          await purchaseLot(lot.id, user.id, finalPrice, promo);
+          showToast('Lot purchased successfully!', 'success');
+
+          setTimeout(() => window.location.reload(), 1500);
+        } catch (error) {
+          showToast('Failed to complete purchase. Try again.', 'error');
+          console.error(error);
+        }
       });
     });
 

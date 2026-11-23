@@ -1,6 +1,10 @@
 import { createElement } from '../utils/dom';
+import './toast.css';
 
-export function showToast(message: string, type: 'warning' | 'error' = 'warning'): void {
+export function showToast(
+  message: string,
+  type: 'warning' | 'error' | 'success' = 'warning'
+): void {
   let container = document.querySelector('.toast-container');
   if (!container) {
     container = createElement('div', 'toast-container');

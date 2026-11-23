@@ -12,30 +12,41 @@ export function openCheckoutModal(
   const form = createElement('form', 'checkout-form');
 
   const title = createElement('h2', 'checkout-form__title', `Checkout: ${lotTitle}`);
-  const info = createElement(
-    'p',
-    'checkout-form__info',
-    `Base price: ${formatCurrency(currentPrice)}`
+
+  const priceBreakdown = createElement('div', 'checkout-form__breakdown');
+
+  const hammerPriceRow = createElement('div', 'checkout-row');
+  hammerPriceRow.append(
+    createElement('span', '', 'Hammer Price:'),
+    createElement('span', '', formatCurrency(currentPrice))
   );
 
-  const promoLabel = createElement('label', 'checkout-form__label', 'Promo Code (try VIPART)');
-  promoLabel.htmlFor = 'promo-input';
+  const premiumRow = createElement('div', 'checkout-row');
+  const premiumLabel = createElement('span', '', "Buyer's Premium (10%):");
+  const premiumValue = createElement('span', '', formatCurrency(currentPrice * 0.1));
+  premiumRow.append(premiumLabel, premiumValue);
+
+  priceBreakdown.append(hammerPriceRow, premiumRow);
+
+  const promoSection = createElement('div', 'checkout-form__promo-section');
+
+  const promoLink = createElement('button', 'checkout-form__promo-link', 'Have a promo code?');
+  promoLink.type = 'button';
+
+  const promoInputContainer = createElement('div', 'checkout-form__promo-input-container');
+  promoInputContainer.style.display = 'none';
 
   const promoInput = createElement('input', 'checkout-form__input');
-  promoInput.id = 'promo-input';
-  promoInput.type = 'text';
-  promoInput.placeholder = 'Enter promo code...';
+  promoInput.placeholder = 'Enter code (e.g., VIPART)';
+
+  promoInputContainer.append(promoInput);
+  promoSection.append(promoLink, promoInputContainer);
 
   const totalText = createElement(
     'p',
     'checkout-form__total',
     `Total: ${formatCurrency(calculateCheckoutTotal([currentPrice], ''))}`
   );
-
-  promoInput.addEventListener('input', () => {
-    const total = calculateCheckoutTotal([currentPrice], promoInput.value);
-    totalText.textContent = `Total: ${formatCurrency(total)}`;
-  });
 
   const actions = createElement('div', 'checkout-form__actions');
   const cancelBtn = createElement('button', 'btn btn--secondary', 'Cancel');
@@ -44,9 +55,32 @@ export function openCheckoutModal(
   submitBtn.type = 'submit';
 
   actions.append(cancelBtn, submitBtn);
-  form.append(title, info, promoLabel, promoInput, totalText, actions);
+  form.append(title, priceBreakdown, promoSection, totalText, actions);
   dialog.append(form);
   document.body.append(dialog);
+
+  promoLink.addEventListener('click', () => {
+    promoLink.style.display = 'none';
+    promoInputContainer.style.display = 'block';
+    promoInput.focus();
+  });
+
+  promoInput.addEventListener('input', () => {
+    const total = calculateCheckoutTotal([currentPrice], promoInput.value);
+    const isVip = promoInput.value.trim().toUpperCase() === 'VIPART';
+
+    totalText.textContent = `Total: ${formatCurrency(total)}`;
+
+    if (isVip) {
+      premiumValue.textContent = 'Waived (VIP)';
+      premiumValue.style.color = '#4ade80';
+      premiumLabel.style.color = '#4ade80';
+    } else {
+      premiumValue.textContent = formatCurrency(currentPrice * 0.1);
+      premiumValue.style.color = '';
+      premiumLabel.style.color = '';
+    }
+  });
 
   cancelBtn.addEventListener('click', () => {
     dialog.close();
