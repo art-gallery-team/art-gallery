@@ -1,11 +1,15 @@
 import type { User } from '@supabase/supabase-js';
 import './style.css';
+import './theme.css';
 import { getCurrentUser, onAuthStateChange } from './api/authApi';
 import { openAuthModal } from './components/AuthModal';
 import { createHeader } from './components/Header';
 import { renderAboutPage } from './pages/about';
 import { renderAuctionHall } from './pages/auction';
 import { renderProfilePage } from './pages/profile';
+import { applyTheme, getSavedTheme } from './utils/theme';
+
+applyTheme(getSavedTheme());
 
 const app = document.querySelector<HTMLDivElement>('#app');
 
