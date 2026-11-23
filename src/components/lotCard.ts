@@ -1,13 +1,13 @@
 import type { Lot } from '../types';
+import type { User } from '@supabase/supabase-js';
 import { createElement } from '../utils/dom';
 import { formatCurrency } from '../core/formatCurrency';
 import { openBidModal } from './bidModal';
 import { openAuthModal } from './AuthModal';
 import { placeBid } from '../api/bidsApi';
 import { getCurrentUser } from '../api/authApi';
-import { showToast } from './toast';
 
-export function createLotCard(lot: Lot, onBidSuccess: () => void): HTMLElement {
+export function createLotCard(lot: Lot, user: User | null, onBidSuccess: () => void): HTMLElement {
   const card = createElement('article', 'lot-card');
 
   if (lot.status !== 'active') {
@@ -28,25 +28,27 @@ export function createLotCard(lot: Lot, onBidSuccess: () => void): HTMLElement {
   const price = createElement('span', 'lot-card__price', formatCurrency(lot.currentPrice));
   priceBlock.append(priceLabel, price);
 
-  const bidBtn = createElement(
-    'button',
-    'lot-card__btn',
-    lot.status === 'active' ? 'Place a Bid' : 'Sold'
-  );
+  const isLeading = user !== null && lot.highestBidderId === user.id;
 
-  if (lot.status !== 'active') {
+  let btnText = 'Place a Bid';
+  if (lot.status !== 'active') btnText = 'Sold';
+  else if (isLeading) btnText = 'You are leading';
+
+  const bidBtn = createElement('button', 'lot-card__btn', btnText);
+
+  if (lot.status !== 'active' || isLeading) {
     bidBtn.setAttribute('disabled', 'true');
   } else {
     bidBtn.addEventListener('click', async () => {
-      const user = await getCurrentUser();
+      const currentUser = await getCurrentUser();
 
-      if (!user) {
+      if (!currentUser) {
         openAuthModal({
           onSuccess: () => {
             openBidModal(lot.title, lot.currentPrice, lot.minStep, async (amount) => {
-              const currentUser = await getCurrentUser();
-              if (currentUser) {
-                await placeBid(lot.id, currentUser.id, amount);
+              const u = await getCurrentUser();
+              if (u) {
+                await placeBid(lot.id, u.id, amount);
                 onBidSuccess();
               }
             });
@@ -55,13 +57,8 @@ export function createLotCard(lot: Lot, onBidSuccess: () => void): HTMLElement {
         return;
       }
 
-      if (lot.highestBidderId === user.id) {
-        showToast('You are already the leading bidder for this lot!', 'warning');
-        return;
-      }
-
       openBidModal(lot.title, lot.currentPrice, lot.minStep, async (amount) => {
-        await placeBid(lot.id, user.id, amount);
+        await placeBid(lot.id, currentUser.id, amount);
         onBidSuccess();
       });
     });

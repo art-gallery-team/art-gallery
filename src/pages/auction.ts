@@ -3,8 +3,9 @@ import { createLotCard } from '../components/lotCard';
 import { createElement } from '../utils/dom';
 import { filterLots } from '../core/filterLots';
 import { debounce } from '../utils/debounce';
+import type { User } from '@supabase/supabase-js';
 
-export async function renderAuctionHall(container: HTMLElement): Promise<void> {
+export async function renderAuctionHall(container: HTMLElement, user: User | null): Promise<void> {
   container.replaceChildren();
   const loader = createElement('div', 'loader', 'Loading masterpieces...');
   container.append(loader);
@@ -75,7 +76,11 @@ export async function renderAuctionHall(container: HTMLElement): Promise<void> {
       }
 
       result.forEach((lot) => {
-        grid.append(createLotCard(lot, () => renderAuctionHall(container)));
+        grid.append(
+          createLotCard(lot, user, () => {
+            renderAuctionHall(container, user);
+          })
+        );
       });
     };
 
