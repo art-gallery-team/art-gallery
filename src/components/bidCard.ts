@@ -2,6 +2,9 @@ import type { Bid } from '../types';
 import { createElement } from '../utils/dom';
 import { formatCurrency } from '../core/formatCurrency';
 import { getUserBidStatus } from '../core/getUserBidStatus';
+import { openCheckoutModal } from './checkoutModal';
+import { purchaseLot } from '../api/purchasesApi';
+import { getCurrentUser } from '../api/authApi';
 
 export function createBidCard(bid: Bid): HTMLElement {
   const card = createElement('div', 'bid-card');
@@ -33,6 +36,24 @@ export function createBidCard(bid: Bid): HTMLElement {
 
   info.append(myBid, currentPrice, statusBadge);
   card.append(title, author, info);
+
+  if (status === 'leading' && lot.status === 'active') {
+    const checkoutBtn = createElement('button', 'btn btn--primary', 'Checkout');
+    checkoutBtn.style.marginTop = '1rem';
+    checkoutBtn.style.width = '100%';
+
+    checkoutBtn.addEventListener('click', async () => {
+      const user = await getCurrentUser();
+      if (!user) return;
+
+      openCheckoutModal(lot.title, lot.currentPrice, async (finalPrice, promo) => {
+        await purchaseLot(lot.id, user.id, finalPrice, promo);
+        window.location.reload();
+      });
+    });
+
+    card.append(checkoutBtn);
+  }
 
   return card;
 }

@@ -1,0 +1,68 @@
+.checkout-dialog {
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.checkout-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+}
+
+.checkout-form {
+  background-color: var(--bg-card);
+  padding: 2rem;
+  border-radius: var(--radius);
+  width: 90vw;
+  max-width: 25rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-main);
+}
+
+.checkout-form__title {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.25rem;
+}
+
+.checkout-form__info {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  margin-bottom: 1.5rem;
+}
+
+.checkout-form__label {
+  display: block;
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-muted);
+}
+
+.checkout-form__input {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--text-muted);
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  box-sizing: border-box;
+}
+
+.checkout-form__input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.checkout-form__total {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 1.5rem;
+}
+
+.checkout-form__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
