@@ -7,6 +7,7 @@ import { openAuthModal } from './AuthModal';
 import { placeBid } from '../api/bidsApi';
 import { getCurrentUser } from '../api/authApi';
 import { showToast } from './toast';
+import { toggleFavorite } from '../api/favoritesApi';
 
 export function createLotCard(lot: Lot, user: User | null, onBidSuccess: () => void): HTMLElement {
   const card = createElement('article', 'lot-card');
@@ -15,10 +16,35 @@ export function createLotCard(lot: Lot, user: User | null, onBidSuccess: () => v
     card.classList.add('lot-card--sold');
   }
 
+  const imgWrapper = createElement('div', 'lot-card__img-wrapper');
+  imgWrapper.style.position = 'relative';
+
   const img = createElement('img', 'lot-card__image');
   img.src = lot.imageUrl;
   img.alt = lot.title;
   img.loading = 'lazy';
+  img.onerror = () => {
+    img.style.display = 'none';
+    const placeholder = createElement('div', 'lot-card__placeholder', 'Artwork');
+    imgWrapper.append(placeholder);
+  };
+  imgWrapper.append(img);
+
+  const favBtn = createElement('button', 'lot-card__fav-btn', '♥');
+  favBtn.addEventListener('click', async (e) => {
+    e.preventDefault();
+    const currentUser = await getCurrentUser();
+    if (!currentUser) return openAuthModal();
+    try {
+      const isAdded = await toggleFavorite(currentUser.id, lot.id, false);
+      favBtn.classList.toggle('lot-card__fav-btn--active', isAdded);
+      showToast(isAdded ? 'Added to favorites!' : 'Removed', 'success');
+    } catch (error) {
+      console.error('Failed to toggle favorite:', error);
+      showToast('Failed to update favorites', 'error');
+    }
+  });
+  imgWrapper.append(favBtn);
 
   const content = createElement('div', 'lot-card__content');
   const title = createElement('h3', 'lot-card__title', lot.title);
@@ -45,7 +71,6 @@ export function createLotCard(lot: Lot, user: User | null, onBidSuccess: () => v
       bidBtn.disabled = true;
       try {
         const currentUser = await getCurrentUser();
-
         if (!currentUser) {
           openAuthModal({
             onSuccess: () => {
@@ -74,7 +99,7 @@ export function createLotCard(lot: Lot, user: User | null, onBidSuccess: () => v
   }
 
   content.append(title, author, priceBlock, bidBtn);
-  card.append(img, content);
+  card.append(imgWrapper, content);
 
   return card;
 }

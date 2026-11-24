@@ -9,12 +9,10 @@ import { showToast } from './toast';
 
 export function createBidCard(bid: Bid, onCheckoutSuccess: () => void): HTMLElement {
   const card = createElement('div', 'bid-card');
-
   const lot = bid.lots;
   if (!lot) return card;
 
   const status = getUserBidStatus(lot.currentPrice, bid.amount);
-
   const title = createElement('h3', 'bid-card__title', lot.title);
   const author = createElement('p', 'bid-card__author', lot.author);
 

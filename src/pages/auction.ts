@@ -1,4 +1,5 @@
 import { fetchLots } from '../api/lotsApi';
+import { subscribeToAuctionUpdates } from '../api/realtimeApi';
 import { createLotCard } from '../components/lotCard';
 import { createElement } from '../utils/dom';
 import { filterLots } from '../core/filterLots';
@@ -6,13 +7,20 @@ import { debounce } from '../utils/debounce';
 import type { User } from '@supabase/supabase-js';
 import { getCurrentUser } from '../api/authApi';
 
+let unsubscribeAuctionRealtime: (() => void) | null = null;
+
 export async function renderAuctionHall(container: HTMLElement, user: User | null): Promise<void> {
+  if (unsubscribeAuctionRealtime) {
+    unsubscribeAuctionRealtime();
+    unsubscribeAuctionRealtime = null;
+  }
+
   container.replaceChildren();
   const loader = createElement('div', 'loader', 'Loading masterpieces...');
   container.append(loader);
 
   try {
-    const allLots = await fetchLots();
+    let allLots = await fetchLots();
     container.replaceChildren();
 
     const title = createElement('h1', 'page-title', 'Auction Hall');
@@ -34,20 +42,25 @@ export async function renderAuctionHall(container: HTMLElement, user: User | nul
     });
 
     const sortSelect = createElement('select', 'auction-controls__select');
-
     const sortDefault = createElement('option', '', 'Default (Active first)');
     sortDefault.value = 'default';
-
     const sortPriceDesc = createElement('option', '', 'Price: High to Low');
     sortPriceDesc.value = 'price-desc';
-
     const sortPriceAsc = createElement('option', '', 'Price: Low to High');
     sortPriceAsc.value = 'price-asc';
-
     sortSelect.append(sortDefault, sortPriceDesc, sortPriceAsc);
 
     controls.append(searchInput, styleSelect, sortSelect);
     const grid = createElement('div', 'lots-grid');
+
+    const refreshLotsSilently = async (): Promise<void> => {
+      try {
+        allLots = await fetchLots();
+        updateGrid();
+      } catch (err) {
+        console.error('Failed to refresh lots in realtime:', err);
+      }
+    };
 
     const updateGrid = (): void => {
       const query = searchInput.value;
@@ -55,17 +68,13 @@ export async function renderAuctionHall(container: HTMLElement, user: User | nul
       const sortBy = sortSelect.value;
 
       let result = filterLots(allLots, query, selectedStyle, null, null);
-
       result = [...result].sort((a, b) => {
         const aIsActive = a.status === 'active';
         const bIsActive = b.status === 'active';
-
         if (aIsActive && !bIsActive) return -1;
         if (!aIsActive && bIsActive) return 1;
-
         if (sortBy === 'price-desc') return b.currentPrice - a.currentPrice;
         if (sortBy === 'price-asc') return a.currentPrice - b.currentPrice;
-
         return b.currentPrice - a.currentPrice;
       });
 
@@ -93,6 +102,10 @@ export async function renderAuctionHall(container: HTMLElement, user: User | nul
     sortSelect.addEventListener('change', updateGrid);
 
     container.append(title, controls, grid);
+
+    unsubscribeAuctionRealtime = subscribeToAuctionUpdates(() => {
+      void refreshLotsSilently();
+    });
   } catch (error) {
     container.replaceChildren();
     container.append(
