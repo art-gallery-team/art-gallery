@@ -14,9 +14,9 @@
   position: relative;
   width: 100%;
   max-width: 400px;
-  background: #18181f;
-  color: #f3f4f6;
-  border: 1px solid #2d2d3a;
+  background: var(--bg-surface);
+  color: var(--text-main);
+  border: 1px solid var(--border-subtle);
   border-radius: 12px;
   padding: 28px 24px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
@@ -28,14 +28,14 @@
   right: 16px;
   background: transparent;
   border: none;
-  color: #9ca3af;
+  color: var(--text-secondary);
   font-size: 24px;
   line-height: 1;
   cursor: pointer;
 }
 
 .auth-modal__close:hover {
-  color: #ffffff;
+  color: var(--text-main);
 }
 
 .auth-modal__title {
@@ -47,7 +47,7 @@
 .auth-modal__subtitle {
   margin: 0 0 20px;
   font-size: 14px;
-  color: #9ca3af;
+  color: var(--text-secondary);
 }
 
 .auth-modal__form {
@@ -65,21 +65,21 @@
 .auth-modal__field label {
   font-size: 13px;
   font-weight: 500;
-  color: #d1d5db;
+  color: var(--text-muted);
 }
 
 .auth-modal__field input {
   padding: 10px 12px;
   border-radius: 8px;
-  border: 1px solid #374151;
-  background: #111116;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-input);
   color: #f9fafb;
   font-size: 14px;
 }
 
 .auth-modal__field input:focus {
   outline: none;
-  border-color: #d4af37;
+  border-color: var(--accent-primary);
 }
 
 .auth-modal__error {
@@ -99,8 +99,8 @@
   padding: 11px;
   border: none;
   border-radius: 8px;
-  background: #d4af37;
-  color: #111116;
+  background: var(--accent);
+  color: var(--bg-main);
   font-weight: 600;
   font-size: 15px;
   cursor: pointer;
@@ -120,13 +120,13 @@
   margin-top: 18px;
   text-align: center;
   font-size: 13px;
-  color: #9ca3af;
+  color: var(--text-secondary);
 }
 
 .auth-modal__switch-btn {
   background: none;
   border: none;
-  color: #d4af37;
+  color: var(--accent-primary);
   font-weight: 600;
   cursor: pointer;
   padding: 0;

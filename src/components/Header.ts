@@ -2,6 +2,7 @@ import type { User } from '@supabase/supabase-js';
 import { signOut } from '../api/authApi';
 import { openAuthModal } from './AuthModal';
 import './Header.css';
+import { getSavedTheme, toggleTheme } from '../utils/theme';
 
 export interface HeaderOptions {
   currentPath: string;
@@ -45,6 +46,27 @@ export function createHeader({ currentPath, user, onNavigate }: HeaderOptions): 
 
   const authActions = document.createElement('div');
   authActions.className = 'app-header__auth';
+
+  const themeBtn = document.createElement('button');
+  themeBtn.type = 'button';
+  themeBtn.className = 'app-header__btn app-header__btn--outline app-header__theme-btn ';
+
+  const updateThemeLabel = (theme: 'dark' | 'light'): void => {
+    themeBtn.textContent = theme === 'dark' ? '☀ Ligth' : '☾ Dark';
+    themeBtn.setAttribute(
+      'aria-label',
+      theme === 'dark' ? 'Switch to light catalog theme' : 'Switch to dark gallery theme'
+    );
+  };
+
+  updateThemeLabel(getSavedTheme());
+
+  themeBtn.addEventListener('click', () => {
+    const newTheme = toggleTheme();
+    updateThemeLabel(newTheme);
+  });
+
+  authActions.prepend(themeBtn);
 
   if (user) {
     const userEmail = document.createElement('span');

@@ -6,6 +6,9 @@ import { createHeader } from './components/Header';
 import { renderAboutPage } from './pages/about';
 import { renderAuctionHall } from './pages/auction';
 import { renderProfilePage } from './pages/profile';
+import { applyTheme, getSavedTheme } from './utils/theme';
+
+applyTheme(getSavedTheme());
 
 const app = document.querySelector<HTMLDivElement>('#app');
 
