@@ -3,8 +3,10 @@ import { createLotCard } from '../components/lotCard';
 import { createElement } from '../utils/dom';
 import { filterLots } from '../core/filterLots';
 import { debounce } from '../utils/debounce';
+import type { User } from '@supabase/supabase-js';
+import { getCurrentUser } from '../api/authApi';
 
-export async function renderAuctionHall(container: HTMLElement): Promise<void> {
+export async function renderAuctionHall(container: HTMLElement, user: User | null): Promise<void> {
   container.replaceChildren();
   const loader = createElement('div', 'loader', 'Loading masterpieces...');
   container.append(loader);
@@ -15,7 +17,6 @@ export async function renderAuctionHall(container: HTMLElement): Promise<void> {
 
     const title = createElement('h1', 'page-title', 'Auction Hall');
     const controls = createElement('div', 'auction-controls');
-
     const searchInput = createElement('input', 'auction-controls__search');
     searchInput.type = 'text';
     searchInput.placeholder = 'Search by title or author...';
@@ -75,7 +76,12 @@ export async function renderAuctionHall(container: HTMLElement): Promise<void> {
       }
 
       result.forEach((lot) => {
-        grid.append(createLotCard(lot, () => renderAuctionHall(container)));
+        grid.append(
+          createLotCard(lot, user, async () => {
+            const freshUser = await getCurrentUser();
+            renderAuctionHall(container, freshUser);
+          })
+        );
       });
     };
 

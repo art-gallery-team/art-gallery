@@ -1,10 +1,23 @@
 import { createElement } from '../utils/dom';
+import './toast.css';
 
-export function showToast(message: string, type: 'warning' | 'error' = 'warning'): void {
+export function showToast(
+  message: string,
+  type: 'warning' | 'error' | 'success' = 'warning'
+): void {
   let container = document.querySelector('.toast-container');
   if (!container) {
     container = createElement('div', 'toast-container');
     document.body.append(container);
+  }
+
+  const existingToasts = Array.from(container.querySelectorAll('.toast'));
+  const isDuplicate = existingToasts.some(
+    (toast) => toast.textContent === message && toast.classList.contains(`toast--${type}`)
+  );
+
+  if (isDuplicate) {
+    return;
   }
 
   const toast = createElement('div', `toast toast--${type}`, message);

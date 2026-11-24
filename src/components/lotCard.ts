@@ -1,4 +1,5 @@
 import type { Lot } from '../types';
+import type { User } from '@supabase/supabase-js';
 import { createElement } from '../utils/dom';
 import { formatCurrency } from '../core/formatCurrency';
 import { openBidModal } from './bidModal';
@@ -7,7 +8,7 @@ import { placeBid } from '../api/bidsApi';
 import { getCurrentUser } from '../api/authApi';
 import { showToast } from './toast';
 
-export function createLotCard(lot: Lot, onBidSuccess: () => void): HTMLElement {
+export function createLotCard(lot: Lot, user: User | null, onBidSuccess: () => void): HTMLElement {
   const card = createElement('article', 'lot-card');
 
   if (lot.status !== 'active') {
@@ -28,42 +29,47 @@ export function createLotCard(lot: Lot, onBidSuccess: () => void): HTMLElement {
   const price = createElement('span', 'lot-card__price', formatCurrency(lot.currentPrice));
   priceBlock.append(priceLabel, price);
 
-  const bidBtn = createElement(
-    'button',
-    'lot-card__btn',
-    lot.status === 'active' ? 'Place a Bid' : 'Sold'
-  );
+  const isLeading = user !== null && lot.highestBidderId === user.id;
 
-  if (lot.status !== 'active') {
+  let btnText = 'Place a Bid';
+  if (lot.status === 'sold') btnText = 'Sold';
+  else if (lot.status === 'closed') btnText = 'Closed';
+  else if (isLeading) btnText = 'You are leading';
+
+  const bidBtn = createElement('button', 'lot-card__btn', btnText);
+
+  if (lot.status !== 'active' || isLeading) {
     bidBtn.setAttribute('disabled', 'true');
   } else {
     bidBtn.addEventListener('click', async () => {
-      const user = await getCurrentUser();
+      bidBtn.disabled = true;
+      try {
+        const currentUser = await getCurrentUser();
 
-      if (!user) {
-        openAuthModal({
-          onSuccess: () => {
-            openBidModal(lot.title, lot.currentPrice, lot.minStep, async (amount) => {
-              const currentUser = await getCurrentUser();
-              if (currentUser) {
-                await placeBid(lot.id, currentUser.id, amount);
-                onBidSuccess();
-              }
-            });
-          },
+        if (!currentUser) {
+          openAuthModal({
+            onSuccess: () => {
+              openBidModal(lot.title, lot.currentPrice, lot.minStep, async (amount) => {
+                const u = await getCurrentUser();
+                if (u) {
+                  await placeBid(lot.id, u.id, amount);
+                  showToast('Bid placed successfully!', 'success');
+                  onBidSuccess();
+                }
+              });
+            },
+          });
+          return;
+        }
+
+        openBidModal(lot.title, lot.currentPrice, lot.minStep, async (amount) => {
+          await placeBid(lot.id, currentUser.id, amount);
+          showToast('Bid placed successfully!', 'success');
+          onBidSuccess();
         });
-        return;
+      } finally {
+        bidBtn.disabled = false;
       }
-
-      if (lot.highestBidderId === user.id) {
-        showToast('You are already the leading bidder for this lot!', 'warning');
-        return;
-      }
-
-      openBidModal(lot.title, lot.currentPrice, lot.minStep, async (amount) => {
-        await placeBid(lot.id, user.id, amount);
-        onBidSuccess();
-      });
     });
   }
 

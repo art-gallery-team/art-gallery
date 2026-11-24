@@ -46,7 +46,7 @@ function renderApp(): void {
   app.append(header, mainContainer);
 
   if (path === '/auction') {
-    void renderAuctionHall(mainContainer);
+    void renderAuctionHall(mainContainer, currentUser);
   } else if (path === '/profile') {
     if (currentUser) {
       void renderProfilePage(mainContainer, currentUser);

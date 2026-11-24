@@ -23,3 +23,13 @@ export interface Bid {
   created_at: string;
   lots?: Lot;
 }
+
+export interface Purchase {
+  id: string;
+  lot_id: string;
+  user_id: string;
+  final_price: number;
+  promo_used: string | null;
+  purchased_at: string;
+  lots?: Lot;
+}
