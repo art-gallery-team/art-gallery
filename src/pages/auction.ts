@@ -4,10 +4,12 @@ import { createLotCard } from '../components/lotCard';
 import { createElement } from '../utils/dom';
 import { filterLots } from '../core/filterLots';
 import { debounce } from '../utils/debounce';
+import type { User } from '@supabase/supabase-js';
+import { getCurrentUser } from '../api/authApi';
 
 let unsubscribeAuctionRealtime: (() => void) | null = null;
 
-export async function renderAuctionHall(container: HTMLElement): Promise<void> {
+export async function renderAuctionHall(container: HTMLElement, user: User | null): Promise<void> {
   if (unsubscribeAuctionRealtime) {
     unsubscribeAuctionRealtime();
     unsubscribeAuctionRealtime = null;
@@ -23,7 +25,6 @@ export async function renderAuctionHall(container: HTMLElement): Promise<void> {
 
     const title = createElement('h1', 'page-title', 'Auction Hall');
     const controls = createElement('div', 'auction-controls');
-
     const searchInput = createElement('input', 'auction-controls__search');
     searchInput.type = 'text';
     searchInput.placeholder = 'Search by title or author...';
@@ -41,16 +42,12 @@ export async function renderAuctionHall(container: HTMLElement): Promise<void> {
     });
 
     const sortSelect = createElement('select', 'auction-controls__select');
-
     const sortDefault = createElement('option', '', 'Default (Active first)');
     sortDefault.value = 'default';
-
     const sortPriceDesc = createElement('option', '', 'Price: High to Low');
     sortPriceDesc.value = 'price-desc';
-
     const sortPriceAsc = createElement('option', '', 'Price: Low to High');
     sortPriceAsc.value = 'price-asc';
-
     sortSelect.append(sortDefault, sortPriceDesc, sortPriceAsc);
 
     controls.append(searchInput, styleSelect, sortSelect);
@@ -71,17 +68,13 @@ export async function renderAuctionHall(container: HTMLElement): Promise<void> {
       const sortBy = sortSelect.value;
 
       let result = filterLots(allLots, query, selectedStyle, null, null);
-
       result = [...result].sort((a, b) => {
         const aIsActive = a.status === 'active';
         const bIsActive = b.status === 'active';
-
         if (aIsActive && !bIsActive) return -1;
         if (!aIsActive && bIsActive) return 1;
-
         if (sortBy === 'price-desc') return b.currentPrice - a.currentPrice;
         if (sortBy === 'price-asc') return a.currentPrice - b.currentPrice;
-
         return b.currentPrice - a.currentPrice;
       });
 
@@ -92,7 +85,12 @@ export async function renderAuctionHall(container: HTMLElement): Promise<void> {
       }
 
       result.forEach((lot) => {
-        grid.append(createLotCard(lot, refreshLotsSilently));
+        grid.append(
+          createLotCard(lot, user, async () => {
+            const freshUser = await getCurrentUser();
+            renderAuctionHall(container, freshUser);
+          })
+        );
       });
     };
 

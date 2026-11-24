@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient';
+import type { Lot } from '../types';
 
 interface FavoriteRow {
   lot_id: string;
@@ -48,4 +49,32 @@ export async function toggleFavorite(
 
   await addFavorite(userId, lotId);
   return true;
+}
+
+export async function getFavoriteLots(userId: string): Promise<Lot[]> {
+  const { data, error } = await supabase
+    .from('favorites')
+    .select('*, lots(*)')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false });
+
+  if (error) throw new Error(error.message);
+
+  return (data || []).map((row) => {
+    const rawLot = Array.isArray(row.lots) ? row.lots[0] : row.lots;
+    return {
+      id: rawLot.id,
+      title: rawLot.title,
+      author: rawLot.author,
+      style: rawLot.style,
+      year: rawLot.year,
+      description: rawLot.description,
+      imageUrl: rawLot.image_url,
+      startPrice: rawLot.start_price,
+      currentPrice: rawLot.current_price,
+      minStep: rawLot.min_step,
+      status: rawLot.status,
+      highestBidderId: rawLot.highest_bidder_id,
+    };
+  });
 }

@@ -2,8 +2,12 @@ import './profile.css';
 import type { User } from '@supabase/supabase-js';
 import type { Bid } from '../types';
 import { getUserBids } from '../api/bidsApi';
+import { getUserPurchases } from '../api/purchasesApi';
+import { getFavoriteLots } from '../api/favoritesApi';
 import { subscribeToAuctionUpdates } from '../api/realtimeApi';
 import { createBidCard } from '../components/bidCard';
+import { createPurchaseCard } from '../components/purchaseCard';
+import { createLotCard } from '../components/lotCard';
 import { createElement } from '../utils/dom';
 
 let unsubscribeProfileRealtime: (() => void) | null = null;
@@ -19,8 +23,12 @@ export async function renderProfilePage(container: HTMLElement, user: User): Pro
   container.append(loader);
 
   try {
-    let bids = await getUserBids(user.id);
-    let currentTab: 'active' | 'history' = 'active';
+    let [bids, purchases, favorites] = await Promise.all([
+      getUserBids(user.id),
+      getUserPurchases(user.id),
+      getFavoriteLots(user.id),
+    ]);
+    let currentTab: 'active' | 'history' | 'purchases' | 'favorites' = 'active';
     container.replaceChildren();
 
     const title = createElement('h1', 'page-title', 'Personal Cabinet');
@@ -33,62 +41,97 @@ export async function renderProfilePage(container: HTMLElement, user: User): Pro
       'Active Bids'
     );
     const historyTabBtn = createElement('button', 'profile-tabs__btn', 'Bidding History');
-    tabsContainer.append(activeTabBtn, historyTabBtn);
+    const purchasesTabBtn = createElement('button', 'profile-tabs__btn', 'My Purchases');
+    const favTabBtn = createElement('button', 'profile-tabs__btn', 'Favorites');
+    tabsContainer.append(activeTabBtn, historyTabBtn, purchasesTabBtn, favTabBtn);
 
     const listContainer = createElement('div', 'profile-list');
 
-    const renderList = (tab: 'active' | 'history'): void => {
+    const renderList = (tab: 'active' | 'history' | 'purchases' | 'favorites'): void => {
       currentTab = tab;
       listContainer.replaceChildren();
 
-      if (bids.length === 0) {
-        listContainer.append(createElement('p', 'empty-message', 'You have no bids yet.'));
+      if (tab === 'purchases') {
+        if (purchases.length === 0)
+          return listContainer.append(createElement('p', 'empty-message', 'No purchases yet.'));
+        purchases.forEach((purchase) => listContainer.append(createPurchaseCard(purchase)));
         return;
       }
 
+      if (tab === 'favorites') {
+        if (favorites.length === 0)
+          return listContainer.append(createElement('p', 'empty-message', 'No favorites yet.'));
+        const grid = createElement('div', 'lots-grid');
+        favorites.forEach((lot) =>
+          grid.append(createLotCard(lot, user, () => renderProfilePage(container, user)))
+        );
+        listContainer.append(grid);
+        return;
+      }
+
+      if (bids.length === 0)
+        return listContainer.append(createElement('p', 'empty-message', 'You have no bids yet.'));
+
       if (tab === 'active') {
         const activeBids = bids.filter((b) => b.lots?.status === 'active');
-
         const highestBidsMap = new Map<string, Bid>();
         activeBids.forEach((bid) => {
           if (!bid.lots) return;
           const existing = highestBidsMap.get(bid.lot_id);
-          if (!existing || bid.amount > existing.amount) {
-            highestBidsMap.set(bid.lot_id, bid);
-          }
+          if (!existing || bid.amount > existing.amount) highestBidsMap.set(bid.lot_id, bid);
         });
-
         const uniqueActiveBids = Array.from(highestBidsMap.values());
-
-        if (uniqueActiveBids.length === 0) {
-          listContainer.append(createElement('p', 'empty-message', 'No active bids.'));
-          return;
-        }
-        uniqueActiveBids.forEach((bid) => listContainer.append(createBidCard(bid)));
+        if (uniqueActiveBids.length === 0)
+          return listContainer.append(createElement('p', 'empty-message', 'No active bids.'));
+        uniqueActiveBids.forEach((bid) =>
+          listContainer.append(createBidCard(bid, () => renderProfilePage(container, user)))
+        );
       } else {
-        bids.forEach((bid) => listContainer.append(createBidCard(bid)));
+        bids.forEach((bid) =>
+          listContainer.append(createBidCard(bid, () => renderProfilePage(container, user)))
+        );
       }
     };
 
-    const refreshBidsSilently = async (): Promise<void> => {
+    const refreshDataSilently = async (): Promise<void> => {
       try {
-        bids = await getUserBids(user.id);
+        [bids, purchases, favorites] = await Promise.all([
+          getUserBids(user.id),
+          getUserPurchases(user.id),
+          getFavoriteLots(user.id),
+        ]);
         renderList(currentTab);
       } catch (err) {
-        console.error('Failed to refresh profile bids in realtime:', err);
+        console.error('Failed to refresh profile in realtime:', err);
       }
+    };
+
+    const resetTabs = () => {
+      activeTabBtn.classList.remove('profile-tabs__btn--active');
+      historyTabBtn.classList.remove('profile-tabs__btn--active');
+      purchasesTabBtn.classList.remove('profile-tabs__btn--active');
+      favTabBtn.classList.remove('profile-tabs__btn--active');
     };
 
     activeTabBtn.addEventListener('click', () => {
+      resetTabs();
       activeTabBtn.classList.add('profile-tabs__btn--active');
-      historyTabBtn.classList.remove('profile-tabs__btn--active');
       renderList('active');
     });
-
     historyTabBtn.addEventListener('click', () => {
+      resetTabs();
       historyTabBtn.classList.add('profile-tabs__btn--active');
-      activeTabBtn.classList.remove('profile-tabs__btn--active');
       renderList('history');
+    });
+    purchasesTabBtn.addEventListener('click', () => {
+      resetTabs();
+      purchasesTabBtn.classList.add('profile-tabs__btn--active');
+      renderList('purchases');
+    });
+    favTabBtn.addEventListener('click', () => {
+      resetTabs();
+      favTabBtn.classList.add('profile-tabs__btn--active');
+      renderList('favorites');
     });
 
     renderList('active');
@@ -96,7 +139,7 @@ export async function renderProfilePage(container: HTMLElement, user: User): Pro
     container.append(title, email, tabsContainer, listContainer);
 
     unsubscribeProfileRealtime = subscribeToAuctionUpdates(() => {
-      void refreshBidsSilently();
+      void refreshDataSilently();
     });
   } catch (error) {
     container.replaceChildren();

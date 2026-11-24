@@ -1,0 +1,116 @@
+.checkout-dialog {
+  background: transparent;
+  border: none;
+  padding: 0;
+  max-width: 100vw;
+}
+
+.checkout-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+}
+
+.checkout-form {
+  background-color: var(--bg-card);
+  padding: 2rem;
+  border-radius: var(--radius);
+  width: 90vw;
+  max-width: 25rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-main);
+  box-sizing: border-box;
+}
+
+.checkout-form__title {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.25rem;
+  word-break: break-word;
+}
+
+.checkout-form__breakdown {
+  background: rgba(255, 255, 255, 0.03);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.checkout-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+  gap: 1rem;
+}
+
+.checkout-row span {
+  word-break: break-word;
+}
+.checkout-row span:last-child {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.checkout-form__promo-section {
+  margin-bottom: 1.5rem;
+}
+
+.checkout-form__promo-link {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 0.875rem;
+  padding: 0;
+  text-align: left;
+}
+
+.checkout-form__promo-link:hover {
+  color: var(--text-main);
+}
+
+.checkout-form__promo-input-container {
+  margin-top: 0.5rem;
+}
+
+.checkout-form__input {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--text-muted);
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.checkout-form__input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.checkout-form__total {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 1.5rem;
+  word-break: break-word;
+}
+
+.checkout-form__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 400px) {
+  .checkout-form__actions {
+    flex-direction: column;
+  }
+
+  .checkout-form__actions .btn {
+    width: 100%;
+  }
+}
