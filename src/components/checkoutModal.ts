@@ -59,6 +59,8 @@ export function openCheckoutModal(
   dialog.append(form);
   document.body.append(dialog);
 
+  dialog.addEventListener('close', () => dialog.remove());
+
   promoLink.addEventListener('click', () => {
     promoLink.style.display = 'none';
     promoInputContainer.style.display = 'block';
@@ -84,7 +86,6 @@ export function openCheckoutModal(
 
   cancelBtn.addEventListener('click', () => {
     dialog.close();
-    dialog.remove();
   });
 
   form.addEventListener('submit', async (e) => {
@@ -96,7 +97,6 @@ export function openCheckoutModal(
     try {
       await onConfirm(finalPrice, promoInput.value);
       dialog.close();
-      dialog.remove();
     } catch (error) {
       console.error(error);
       submitBtn.disabled = false;

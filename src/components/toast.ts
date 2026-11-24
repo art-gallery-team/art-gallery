@@ -12,7 +12,9 @@ export function showToast(
   }
 
   const existingToasts = Array.from(container.querySelectorAll('.toast'));
-  const isDuplicate = existingToasts.some((toast) => toast.textContent === message);
+  const isDuplicate = existingToasts.some(
+    (toast) => toast.textContent === message && toast.classList.contains(`toast--${type}`)
+  );
 
   if (isDuplicate) {
     return;

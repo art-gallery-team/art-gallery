@@ -71,9 +71,13 @@ export async function renderProfilePage(container: HTMLElement, user: User): Pro
           listContainer.append(createElement('p', 'empty-message', 'No active bids.'));
           return;
         }
-        uniqueActiveBids.forEach((bid) => listContainer.append(createBidCard(bid)));
+        uniqueActiveBids.forEach((bid) =>
+          listContainer.append(createBidCard(bid, () => renderProfilePage(container, user)))
+        );
       } else {
-        bids.forEach((bid) => listContainer.append(createBidCard(bid)));
+        bids.forEach((bid) =>
+          listContainer.append(createBidCard(bid, () => renderProfilePage(container, user)))
+        );
       }
     };
 

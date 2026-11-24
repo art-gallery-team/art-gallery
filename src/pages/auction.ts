@@ -4,6 +4,7 @@ import { createElement } from '../utils/dom';
 import { filterLots } from '../core/filterLots';
 import { debounce } from '../utils/debounce';
 import type { User } from '@supabase/supabase-js';
+import { getCurrentUser } from '../api/authApi';
 
 export async function renderAuctionHall(container: HTMLElement, user: User | null): Promise<void> {
   container.replaceChildren();
@@ -16,7 +17,6 @@ export async function renderAuctionHall(container: HTMLElement, user: User | nul
 
     const title = createElement('h1', 'page-title', 'Auction Hall');
     const controls = createElement('div', 'auction-controls');
-
     const searchInput = createElement('input', 'auction-controls__search');
     searchInput.type = 'text';
     searchInput.placeholder = 'Search by title or author...';
@@ -77,8 +77,9 @@ export async function renderAuctionHall(container: HTMLElement, user: User | nul
 
       result.forEach((lot) => {
         grid.append(
-          createLotCard(lot, user, () => {
-            renderAuctionHall(container, user);
+          createLotCard(lot, user, async () => {
+            const freshUser = await getCurrentUser();
+            renderAuctionHall(container, freshUser);
           })
         );
       });

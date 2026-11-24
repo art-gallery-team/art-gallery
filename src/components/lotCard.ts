@@ -32,7 +32,8 @@ export function createLotCard(lot: Lot, user: User | null, onBidSuccess: () => v
   const isLeading = user !== null && lot.highestBidderId === user.id;
 
   let btnText = 'Place a Bid';
-  if (lot.status !== 'active') btnText = 'Sold';
+  if (lot.status === 'sold') btnText = 'Sold';
+  else if (lot.status === 'closed') btnText = 'Closed';
   else if (isLeading) btnText = 'You are leading';
 
   const bidBtn = createElement('button', 'lot-card__btn', btnText);
@@ -41,29 +42,34 @@ export function createLotCard(lot: Lot, user: User | null, onBidSuccess: () => v
     bidBtn.setAttribute('disabled', 'true');
   } else {
     bidBtn.addEventListener('click', async () => {
-      const currentUser = await getCurrentUser();
+      bidBtn.disabled = true;
+      try {
+        const currentUser = await getCurrentUser();
 
-      if (!currentUser) {
-        openAuthModal({
-          onSuccess: () => {
-            openBidModal(lot.title, lot.currentPrice, lot.minStep, async (amount) => {
-              const u = await getCurrentUser();
-              if (u) {
-                await placeBid(lot.id, u.id, amount);
-                showToast('Bid placed successfully!', 'success');
-                onBidSuccess();
-              }
-            });
-          },
+        if (!currentUser) {
+          openAuthModal({
+            onSuccess: () => {
+              openBidModal(lot.title, lot.currentPrice, lot.minStep, async (amount) => {
+                const u = await getCurrentUser();
+                if (u) {
+                  await placeBid(lot.id, u.id, amount);
+                  showToast('Bid placed successfully!', 'success');
+                  onBidSuccess();
+                }
+              });
+            },
+          });
+          return;
+        }
+
+        openBidModal(lot.title, lot.currentPrice, lot.minStep, async (amount) => {
+          await placeBid(lot.id, currentUser.id, amount);
+          showToast('Bid placed successfully!', 'success');
+          onBidSuccess();
         });
-        return;
+      } finally {
+        bidBtn.disabled = false;
       }
-
-      openBidModal(lot.title, lot.currentPrice, lot.minStep, async (amount) => {
-        await placeBid(lot.id, currentUser.id, amount);
-        showToast('Bid placed successfully!', 'success');
-        onBidSuccess();
-      });
     });
   }
 

@@ -7,7 +7,7 @@ import { purchaseLot } from '../api/purchasesApi';
 import { getCurrentUser } from '../api/authApi';
 import { showToast } from './toast';
 
-export function createBidCard(bid: Bid): HTMLElement {
+export function createBidCard(bid: Bid, onCheckoutSuccess: () => void): HTMLElement {
   const card = createElement('div', 'bid-card');
 
   const lot = bid.lots;
@@ -44,20 +44,24 @@ export function createBidCard(bid: Bid): HTMLElement {
     checkoutBtn.style.width = '100%';
 
     checkoutBtn.addEventListener('click', async () => {
-      const user = await getCurrentUser();
-      if (!user) return;
+      checkoutBtn.disabled = true;
+      try {
+        const user = await getCurrentUser();
+        if (!user) return;
 
-      openCheckoutModal(lot.title, lot.currentPrice, async (finalPrice, promo) => {
-        try {
-          await purchaseLot(lot.id, user.id, finalPrice, promo);
-          showToast('Lot purchased successfully!', 'success');
-
-          setTimeout(() => window.location.reload(), 1500);
-        } catch (error) {
-          showToast('Failed to complete purchase. Try again.', 'error');
-          console.error(error);
-        }
-      });
+        openCheckoutModal(lot.title, lot.currentPrice, async (finalPrice, promo) => {
+          try {
+            await purchaseLot(lot.id, user.id, finalPrice, promo);
+            showToast('Lot purchased successfully!', 'success');
+            onCheckoutSuccess();
+          } catch (error) {
+            showToast('Failed to complete purchase. Try again.', 'error');
+            throw error;
+          }
+        });
+      } finally {
+        checkoutBtn.disabled = false;
+      }
     });
 
     card.append(checkoutBtn);

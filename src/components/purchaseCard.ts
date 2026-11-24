@@ -6,7 +6,16 @@ export function createPurchaseCard(purchase: Purchase): HTMLElement {
   const card = createElement('div', 'bid-card');
   const lot = purchase.lots;
 
-  if (!lot) return card;
+  if (!lot) {
+    const title = createElement('h3', 'bid-card__title', 'Unknown Lot');
+    const price = createElement(
+      'span',
+      'bid-card__my-bid',
+      `Paid: ${formatCurrency(purchase.final_price)}`
+    );
+    card.append(title, price);
+    return card;
+  }
 
   const title = createElement('h3', 'bid-card__title', lot.title);
   const author = createElement('p', 'bid-card__author', lot.author);
@@ -18,11 +27,12 @@ export function createPurchaseCard(purchase: Purchase): HTMLElement {
     `Paid: ${formatCurrency(purchase.final_price)}`
   );
 
-  let promoText = '';
+  info.append(price);
+
   if (purchase.promo_used) {
-    promoText = ` (Promo: ${purchase.promo_used})`;
+    const promo = createElement('span', 'bid-card__current', ` (Promo: ${purchase.promo_used})`);
+    info.append(promo);
   }
-  const promo = createElement('span', 'bid-card__current', promoText);
 
   const statusBadge = createElement(
     'span',
@@ -30,7 +40,7 @@ export function createPurchaseCard(purchase: Purchase): HTMLElement {
     'Purchased'
   );
 
-  info.append(price, promo, statusBadge);
+  info.append(statusBadge);
   card.append(title, author, info);
 
   return card;
