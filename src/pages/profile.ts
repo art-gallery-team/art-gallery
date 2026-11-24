@@ -52,25 +52,31 @@ export async function renderProfilePage(container: HTMLElement, user: User): Pro
       listContainer.replaceChildren();
 
       if (tab === 'purchases') {
-        if (purchases.length === 0)
-          return listContainer.append(createElement('p', 'empty-message', 'No purchases yet.'));
+        if (purchases.length === 0) {
+          listContainer.append(createElement('p', 'empty-message', 'No purchases yet.'));
+          return;
+        }
         purchases.forEach((purchase) => listContainer.append(createPurchaseCard(purchase)));
         return;
       }
 
       if (tab === 'favorites') {
-        if (favorites.length === 0)
-          return listContainer.append(createElement('p', 'empty-message', 'No favorites yet.'));
+        if (favorites.length === 0) {
+          listContainer.append(createElement('p', 'empty-message', 'No favorites yet.'));
+          return;
+        }
         const grid = createElement('div', 'lots-grid');
         favorites.forEach((lot) =>
-          grid.append(createLotCard(lot, user, () => renderProfilePage(container, user)))
+          grid.append(createLotCard(lot, user, refreshDataSilently, true, refreshDataSilently))
         );
         listContainer.append(grid);
         return;
       }
 
-      if (bids.length === 0)
-        return listContainer.append(createElement('p', 'empty-message', 'You have no bids yet.'));
+      if (bids.length === 0) {
+        listContainer.append(createElement('p', 'empty-message', 'You have no bids yet.'));
+        return;
+      }
 
       if (tab === 'active') {
         const activeBids = bids.filter((b) => b.lots?.status === 'active');
@@ -81,15 +87,15 @@ export async function renderProfilePage(container: HTMLElement, user: User): Pro
           if (!existing || bid.amount > existing.amount) highestBidsMap.set(bid.lot_id, bid);
         });
         const uniqueActiveBids = Array.from(highestBidsMap.values());
-        if (uniqueActiveBids.length === 0)
-          return listContainer.append(createElement('p', 'empty-message', 'No active bids.'));
+        if (uniqueActiveBids.length === 0) {
+          listContainer.append(createElement('p', 'empty-message', 'No active bids.'));
+          return;
+        }
         uniqueActiveBids.forEach((bid) =>
-          listContainer.append(createBidCard(bid, () => renderProfilePage(container, user)))
+          listContainer.append(createBidCard(bid, refreshDataSilently))
         );
       } else {
-        bids.forEach((bid) =>
-          listContainer.append(createBidCard(bid, () => renderProfilePage(container, user)))
-        );
+        bids.forEach((bid) => listContainer.append(createBidCard(bid, refreshDataSilently)));
       }
     };
 
