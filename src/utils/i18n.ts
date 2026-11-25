@@ -94,6 +94,12 @@ const translations = {
     'checkout.total': 'Total',
     'checkout.waived': 'Waived (VIP)',
     'checkout.confirm': 'Confirm Purchase',
+
+    //Toast
+    'toast.favAdded': 'Added to favorites!',
+    'toast.favRemoved': 'Removed from favorites',
+    'toast.favError': 'Failed to update favorites',
+    'toast.bidSuccess': 'Bid placed successfully!',
   },
   ru: {
     // Header & Navigation
@@ -185,6 +191,12 @@ const translations = {
     'checkout.total': 'Итого',
     'checkout.waived': 'Отменена (VIP)',
     'checkout.confirm': 'Подтвердить покупку',
+
+    //Toast
+    'toast.favAdded': 'Добавлено в избранное!',
+    'toast.favRemoved': 'Удалено из избранного',
+    'toast.favError': 'Не удалось обновить избранное',
+    'toast.bidSuccess': 'Ставка успешно сделана!',
   },
   be: {
     // Header & Navigation
@@ -276,6 +288,12 @@ const translations = {
     'checkout.total': 'Разам',
     'checkout.waived': 'Адменена (VIP)',
     'checkout.confirm': 'Пацвердзіць куплю',
+
+    //Toast
+    'toast.favAdded': 'Дададзена ў абранае!',
+    'toast.favRemoved': 'Выдалена з абранага',
+    'toast.favError': 'Не ўдалося абнавіць абранае',
+    'toast.bidSuccess': 'Стаўка паспяхова зроблена!',
   },
 } as const;
 

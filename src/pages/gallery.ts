@@ -2,6 +2,8 @@ import { fetchLots } from '../api/lotsApi';
 import { openArtworkModal } from '../components/artworkModal';
 import { createElement } from '../utils/dom';
 import { debounce } from '../utils/debounce';
+import { t } from '../utils/i18n';
+import { getLocalizedLot } from '../utils/lotTranslations';
 import type { Lot } from '../types';
 import './gallery.css';
 
@@ -13,14 +15,10 @@ export async function renderGalleryPage(
 
   const page = createElement('section', 'gallery-page');
   const header = createElement('header', 'gallery-page__header');
-  const title = createElement('h1', 'gallery-page__title', 'Art Gallery');
-  const subtitle = createElement(
-    'p',
-    'gallery-page__subtitle',
-    'Permanent & current exhibition collection. Explore artworks in detail.'
-  );
+  const title = createElement('h1', 'gallery-page__title', t('gallery.title'));
+  const subtitle = createElement('p', 'gallery-page__subtitle', t('gallery.subtitle'));
 
-  const auctionCta = createElement('button', 'gallery-page__cta', 'Enter Auction Hall →');
+  const auctionCta = createElement('button', 'gallery-page__cta', t('gallery.ctaAuction'));
   auctionCta.type = 'button';
   auctionCta.addEventListener('click', () => onNavigate('/auction'));
 
@@ -30,20 +28,20 @@ export async function renderGalleryPage(
 
   const searchInput = createElement('input', 'gallery-controls__search');
   searchInput.type = 'search';
-  searchInput.placeholder = 'Search by artwork title or artist...';
-  searchInput.setAttribute('aria-label', 'Search by artwork title or artist');
+  searchInput.placeholder = t('gallery.searchPlaceholder');
+  searchInput.setAttribute('aria-label', t('gallery.searchPlaceholder'));
 
   const styleSelect = createElement('select', 'gallery-controls__select');
-  styleSelect.setAttribute('aria-label', 'Filter by style');
+  styleSelect.setAttribute('aria-label', t('gallery.allStyles'));
 
-  const defaultOption = createElement('option', '', 'All Styles');
+  const defaultOption = createElement('option', '', t('gallery.allStyles'));
   defaultOption.value = 'all';
   styleSelect.appendChild(defaultOption);
 
   controls.append(searchInput, styleSelect);
 
   const contentArea = createElement('div', 'gallery-content');
-  contentArea.appendChild(createElement('div', 'gallery-state', 'Loading exhibition...'));
+  contentArea.appendChild(createElement('div', 'gallery-state', t('gallery.loading')));
 
   page.append(header, controls, contentArea);
   container.appendChild(page);
@@ -56,25 +54,27 @@ export async function renderGalleryPage(
     contentArea.replaceChildren();
 
     const filtered = allLots.filter((lot) => {
+      const localized = getLocalizedLot(lot);
       const matchesStyle = selectedStyle === 'all' || lot.style === selectedStyle;
       const query = searchQuery.trim().toLowerCase();
       const matchesQuery =
         !query ||
+        localized.title.toLowerCase().includes(query) ||
+        localized.author.toLowerCase().includes(query) ||
         lot.title.toLowerCase().includes(query) ||
         lot.author.toLowerCase().includes(query);
       return matchesStyle && matchesQuery;
     });
 
     if (filtered.length === 0) {
-      contentArea.appendChild(
-        createElement('div', 'gallery-state', 'No artworks match your filter criteria.')
-      );
+      contentArea.appendChild(createElement('div', 'gallery-state', t('gallery.empty')));
       return;
     }
 
     const grid = createElement('div', 'gallery-grid');
 
     filtered.forEach((lot) => {
+      const localized = getLocalizedLot(lot);
       const card = createElement('article', 'gallery-card');
 
       const imageWrap = createElement('div', 'gallery-card__image-wrap');
@@ -87,7 +87,7 @@ export async function renderGalleryPage(
       if (lot.imageUrl) {
         const img = createElement('img', 'gallery-card__image');
         img.src = lot.imageUrl;
-        img.alt = lot.title;
+        img.alt = localized.title;
         img.loading = 'lazy';
         img.onerror = () => {
           img.onerror = null;
@@ -99,17 +99,17 @@ export async function renderGalleryPage(
         showPlaceholder();
       }
 
-      const badgeParts = [lot.year, lot.style].filter(Boolean);
+      const badgeParts = [lot.year, localized.style].filter(Boolean);
       if (badgeParts.length > 0) {
         const badge = createElement('span', 'gallery-card__badge', badgeParts.join(' • '));
         imageWrap.appendChild(badge);
       }
 
       const body = createElement('div', 'gallery-card__body');
-      const cardTitle = createElement('h2', 'gallery-card__title', lot.title);
-      const cardAuthor = createElement('p', 'gallery-card__author', lot.author);
+      const cardTitle = createElement('h2', 'gallery-card__title', localized.title);
+      const cardAuthor = createElement('p', 'gallery-card__author', localized.author);
 
-      const detailsBtn = createElement('button', 'gallery-card__btn', 'View Details');
+      const detailsBtn = createElement('button', 'gallery-card__btn', t('gallery.viewDetails'));
       detailsBtn.type = 'button';
       detailsBtn.addEventListener('click', () => {
         openArtworkModal(lot, () => onNavigate('/auction'));
@@ -140,24 +140,24 @@ export async function renderGalleryPage(
   try {
     allLots = await fetchLots();
 
-    const styles = Array.from(
-      new Set(allLots.map((lot) => lot.style).filter((s): s is string => Boolean(s)))
-    ).sort();
-
-    styles.forEach((style) => {
-      const opt = createElement('option', '', style);
-      opt.value = style;
-      styleSelect.appendChild(opt);
+    // Собираем уникальные оригинальные стили и их переведённые названия
+    const styleMap = new Map<string, string>();
+    allLots.forEach((lot) => {
+      if (lot.style && !styleMap.has(lot.style)) {
+        styleMap.set(lot.style, getLocalizedLot(lot).style);
+      }
     });
+
+    Array.from(styleMap.entries())
+      .sort((a, b) => a[1].localeCompare(b[1]))
+      .forEach(([rawStyle, localizedStyle]) => {
+        const opt = createElement('option', '', localizedStyle);
+        opt.value = rawStyle;
+        styleSelect.appendChild(opt);
+      });
 
     renderCards();
   } catch {
-    contentArea.replaceChildren(
-      createElement(
-        'div',
-        'gallery-state',
-        'Failed to load gallery artworks. Please try again later.'
-      )
-    );
+    contentArea.replaceChildren(createElement('div', 'gallery-state', t('gallery.error')));
   }
 }

@@ -9,6 +9,8 @@ import { placeBid } from '../api/bidsApi';
 import { getCurrentUser } from '../api/authApi';
 import { showToast } from './toast';
 import { toggleFavorite } from '../api/favoritesApi';
+import { t } from '../utils/i18n';
+import { getLocalizedLot } from '../utils/lotTranslations';
 
 export function createLotCard(
   lot: Lot,
@@ -17,6 +19,7 @@ export function createLotCard(
   isInitiallyFavorite: boolean = false,
   onFavoriteToggle?: () => void
 ): HTMLElement {
+  const localized = getLocalizedLot(lot);
   const card = createElement('article', 'lot-card');
 
   if (lot.status !== 'active') {
@@ -28,7 +31,7 @@ export function createLotCard(
 
   const img = createElement('img', 'lot-card__image');
   img.src = lot.imageUrl;
-  img.alt = lot.title;
+  img.alt = localized.title;
   img.loading = 'lazy';
   img.onerror = () => {
     img.style.display = 'none';
@@ -57,11 +60,11 @@ export function createLotCard(
 
       isFavorite = await toggleFavorite(currentUser.id, lot.id, isFavorite);
       favBtn.classList.toggle('lot-card__fav-btn--active', isFavorite);
-      showToast(isFavorite ? 'Added to favorites!' : 'Removed from favorites', 'success');
+      showToast(isFavorite ? t('toast.favAdded') : t('toast.favRemoved'), 'success');
       onFavoriteToggle?.();
     } catch (error) {
       console.error('Failed to toggle favorite:', error);
-      showToast('Failed to update favorites', 'error');
+      showToast(t('toast.favError'), 'error');
     } finally {
       favBtn.disabled = false;
     }
@@ -69,27 +72,27 @@ export function createLotCard(
   imgWrapper.append(favBtn);
 
   const content = createElement('div', 'lot-card__content');
-  const title = createElement('h3', 'lot-card__title', lot.title);
-  const author = createElement('p', 'lot-card__author', lot.author);
+  const title = createElement('h3', 'lot-card__title', localized.title);
+  const author = createElement('p', 'lot-card__author', localized.author);
 
   const priceBlock = createElement('div', 'lot-card__price-block');
-  const priceLabel = createElement('span', 'lot-card__price-label', 'Current Price');
+  const priceLabel = createElement('span', 'lot-card__price-label', t('lot.currentPrice'));
   const price = createElement('span', 'lot-card__price', formatCurrency(lot.currentPrice));
   priceBlock.append(priceLabel, price);
 
   const isLeading = user !== null && lot.highestBidderId === user.id;
 
-  let btnText = 'Place a Bid';
-  if (lot.status === 'sold') btnText = 'Sold';
-  else if (lot.status === 'closed') btnText = 'Closed';
-  else if (isLeading) btnText = 'You are leading';
+  let btnText = t('lot.placeBid');
+  if (lot.status === 'sold') btnText = t('lot.sold');
+  else if (lot.status === 'closed') btnText = t('lot.closed');
+  else if (isLeading) btnText = t('lot.leading');
 
   const actions = createElement('div', 'lot-card__actions');
 
   const detailsBtn = createElement(
     'button',
     'lot-card__btn lot-card__btn--secondary',
-    'View Details'
+    t('lot.viewDetails')
   );
   detailsBtn.type = 'button';
   detailsBtn.addEventListener('click', () => {
@@ -112,11 +115,11 @@ export function createLotCard(
         if (!currentUser) {
           openAuthModal({
             onSuccess: () => {
-              openBidModal(lot.title, lot.currentPrice, lot.minStep, async (amount) => {
+              openBidModal(localized.title, lot.currentPrice, lot.minStep, async (amount) => {
                 const u = await getCurrentUser();
                 if (u) {
                   await placeBid(lot.id, u.id, amount);
-                  showToast('Bid placed successfully!', 'success');
+                  showToast(t('toast.bidSuccess'), 'success');
                   onBidSuccess();
                 }
               });
@@ -125,9 +128,9 @@ export function createLotCard(
           return;
         }
 
-        openBidModal(lot.title, lot.currentPrice, lot.minStep, async (amount) => {
+        openBidModal(localized.title, lot.currentPrice, lot.minStep, async (amount) => {
           await placeBid(lot.id, currentUser.id, amount);
-          showToast('Bid placed successfully!', 'success');
+          showToast(t('toast.bidSuccess'), 'success');
           onBidSuccess();
         });
       } finally {
