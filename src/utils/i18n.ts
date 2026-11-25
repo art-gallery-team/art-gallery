@@ -71,6 +71,29 @@ const translations = {
     'auth.signUp': 'Sign Up',
     'auth.noAccount': "Don't have an account? ",
     'auth.hasAccount': 'Already have an account? ',
+    'auth.passwordPlaceholder': 'At least 6 characters',
+    'auth.creatingAccount': 'Creating account...',
+    'auth.signingIn': 'Signing in...',
+    'auth.failed': 'Authentication failed. Please try again.',
+
+    // Bid
+    'bid.title': 'Bid for',
+    'bid.current': 'Current',
+    'bid.minStep': 'Min step',
+    'bid.cancel': 'Cancel',
+    'bid.confirm': 'Confirm Bid',
+    'bid.processing': 'Processing...',
+    'bid.unknownError': 'Unknown error',
+
+    // Checkout
+    'checkout.title': 'Checkout',
+    'checkout.hammerPrice': 'Hammer Price',
+    'checkout.buyersPremium': "Buyer's Premium (10%)",
+    'checkout.havePromo': 'Have a promo code?',
+    'checkout.promoPlaceholder': 'Enter code (e.g., VIPART)',
+    'checkout.total': 'Total',
+    'checkout.waived': 'Waived (VIP)',
+    'checkout.confirm': 'Confirm Purchase',
   },
   ru: {
     // Header & Navigation
@@ -139,6 +162,29 @@ const translations = {
     'auth.signUp': 'Зарегистрироваться',
     'auth.noAccount': 'Нет аккаунта? ',
     'auth.hasAccount': 'Уже есть аккаунт? ',
+    'auth.passwordPlaceholder': 'Минимум 6 символов',
+    'auth.creatingAccount': 'Создание аккаунта...',
+    'auth.signingIn': 'Вход...',
+    'auth.failed': 'Ошибка авторизации. Попробуйте снова.',
+
+    // Bid
+    'bid.title': 'Ставка на',
+    'bid.current': 'Текущая',
+    'bid.minStep': 'Мин. шаг',
+    'bid.cancel': 'Отмена',
+    'bid.confirm': 'Подтвердить ставку',
+    'bid.processing': 'Обработка...',
+    'bid.unknownError': 'Неизвестная ошибка',
+
+    // Checkout
+    'checkout.title': 'Оформление покупки',
+    'checkout.hammerPrice': 'Цена лота',
+    'checkout.buyersPremium': 'Комиссия покупателя (10%)',
+    'checkout.havePromo': 'Есть промокод?',
+    'checkout.promoPlaceholder': 'Введите код (например, VIPART)',
+    'checkout.total': 'Итого',
+    'checkout.waived': 'Отменена (VIP)',
+    'checkout.confirm': 'Подтвердить покупку',
   },
   be: {
     // Header & Navigation
@@ -207,6 +253,29 @@ const translations = {
     'auth.signUp': 'Зарэгістравацца',
     'auth.noAccount': 'Няма акаўнта? ',
     'auth.hasAccount': 'Ужо ёсць акаўнт? ',
+    'auth.passwordPlaceholder': 'Мінімум 6 сімвалаў',
+    'auth.creatingAccount': 'Стварэнне акаўнта...',
+    'auth.signingIn': 'Уваход...',
+    'auth.failed': 'Памылка аўтарызацыі. Паспрабуйце зноў.',
+
+    // Bid
+    'bid.title': 'Стаўка на',
+    'bid.current': 'Бягучая',
+    'bid.minStep': 'Мін. крок',
+    'bid.cancel': 'Адмена',
+    'bid.confirm': 'Пацвердзіць стаўку',
+    'bid.processing': 'Апрацоўка...',
+    'bid.unknownError': 'Невядомая памылка',
+
+    // Checkout
+    'checkout.title': 'Афармленне пакупкі',
+    'checkout.hammerPrice': 'Цана лота',
+    'checkout.buyersPremium': 'Камісія пакупніка (10%)',
+    'checkout.havePromo': 'Ёсць промакод?',
+    'checkout.promoPlaceholder': 'Увядзіце код (напрыклад, VIPART)',
+    'checkout.total': 'Разам',
+    'checkout.waived': 'Адменена (VIP)',
+    'checkout.confirm': 'Пацвердзіць куплю',
   },
 } as const;
 

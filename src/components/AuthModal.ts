@@ -1,6 +1,7 @@
 import type { User } from '@supabase/supabase-js';
 import { signInWithEmail, signUpWithEmail } from '../api/authApi';
 import { validateAuthForm } from '../core/validateAuthForm';
+import { t } from '../utils/i18n';
 import './AuthModal.css';
 
 export interface AuthModalOptions {
@@ -32,11 +33,11 @@ export function openAuthModal(options: AuthModalOptions = {}): void {
 
   const title = document.createElement('h2');
   title.className = 'auth-modal__title';
-  title.textContent = 'Sign In';
+  title.textContent = t('auth.loginTitle');
 
   const subtitle = document.createElement('p');
   subtitle.className = 'auth-modal__subtitle';
-  subtitle.textContent = 'Sign in to place bids and manage your favorite artworks';
+  subtitle.textContent = t('auth.loginSubtitle');
 
   const form = document.createElement('form');
   form.className = 'auth-modal__form';
@@ -48,7 +49,7 @@ export function openAuthModal(options: AuthModalOptions = {}): void {
 
   const emailLabel = document.createElement('label');
   emailLabel.htmlFor = 'auth-email';
-  emailLabel.textContent = 'Email';
+  emailLabel.textContent = t('auth.email');
 
   const emailInput = document.createElement('input');
   emailInput.id = 'auth-email';
@@ -67,12 +68,12 @@ export function openAuthModal(options: AuthModalOptions = {}): void {
 
   const passwordLabel = document.createElement('label');
   passwordLabel.htmlFor = 'auth-password';
-  passwordLabel.textContent = 'Password';
+  passwordLabel.textContent = t('auth.password');
 
   const passwordInput = document.createElement('input');
   passwordInput.id = 'auth-password';
   passwordInput.type = 'password';
-  passwordInput.placeholder = 'At least 6 characters';
+  passwordInput.placeholder = t('auth.passwordPlaceholder');
   passwordInput.required = true;
 
   const passwordError = document.createElement('span');
@@ -88,7 +89,7 @@ export function openAuthModal(options: AuthModalOptions = {}): void {
   const submitBtn = document.createElement('button');
   submitBtn.type = 'submit';
   submitBtn.className = 'auth-modal__submit';
-  submitBtn.textContent = 'Sign In';
+  submitBtn.textContent = t('auth.signIn');
 
   form.append(emailGroup, passwordGroup, serverError, submitBtn);
 
@@ -97,12 +98,12 @@ export function openAuthModal(options: AuthModalOptions = {}): void {
   footer.className = 'auth-modal__footer';
 
   const switchText = document.createElement('span');
-  switchText.textContent = "Don't have an account? ";
+  switchText.textContent = t('auth.noAccount');
 
   const switchBtn = document.createElement('button');
   switchBtn.type = 'button';
   switchBtn.className = 'auth-modal__switch-btn';
-  switchBtn.textContent = 'Sign Up';
+  switchBtn.textContent = t('auth.signUp');
 
   footer.append(switchText, switchBtn);
   modal.append(closeBtn, title, subtitle, form, footer);
@@ -140,15 +141,11 @@ export function openAuthModal(options: AuthModalOptions = {}): void {
 
   switchBtn.addEventListener('click', () => {
     isRegisterMode = !isRegisterMode;
-    title.textContent = isRegisterMode ? 'Create Account' : 'Sign In';
-    subtitle.textContent = isRegisterMode
-      ? 'Register to participate in live contemporary art auctions'
-      : 'Sign in to place bids and manage your favorite artworks';
-    submitBtn.textContent = isRegisterMode ? 'Sign Up' : 'Sign In';
-    switchText.textContent = isRegisterMode
-      ? 'Already have an account? '
-      : "Don't have an account? ";
-    switchBtn.textContent = isRegisterMode ? 'Sign In' : 'Sign Up';
+    title.textContent = isRegisterMode ? t('auth.registerTitle') : t('auth.loginTitle');
+    subtitle.textContent = isRegisterMode ? t('auth.registerSubtitle') : t('auth.loginSubtitle');
+    submitBtn.textContent = isRegisterMode ? t('auth.signUp') : t('auth.signIn');
+    switchText.textContent = isRegisterMode ? t('auth.hasAccount') : t('auth.noAccount');
+    switchBtn.textContent = isRegisterMode ? t('auth.signIn') : t('auth.signUp');
 
     emailError.textContent = '';
     passwordError.textContent = '';
@@ -169,7 +166,7 @@ export function openAuthModal(options: AuthModalOptions = {}): void {
     }
 
     submitBtn.disabled = true;
-    submitBtn.textContent = isRegisterMode ? 'Creating account...' : 'Signing in...';
+    submitBtn.textContent = isRegisterMode ? t('auth.creatingAccount') : t('auth.signingIn');
 
     try {
       const user = isRegisterMode
@@ -179,11 +176,10 @@ export function openAuthModal(options: AuthModalOptions = {}): void {
       closeModal();
       options.onSuccess?.(user);
     } catch (error) {
-      serverError.textContent =
-        error instanceof Error ? error.message : 'Authentication failed. Please try again.';
+      serverError.textContent = error instanceof Error ? error.message : t('auth.failed');
     } finally {
       submitBtn.disabled = false;
-      submitBtn.textContent = isRegisterMode ? 'Sign Up' : 'Sign In';
+      submitBtn.textContent = isRegisterMode ? t('auth.signUp') : t('auth.signIn');
     }
   });
 
