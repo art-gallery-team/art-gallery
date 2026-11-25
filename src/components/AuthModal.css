@@ -19,7 +19,7 @@
   border: 1px solid var(--border-subtle);
   border-radius: 12px;
   padding: 28px 24px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 20px 40px var(--shadow-card);
 }
 
 .auth-modal__close {
@@ -73,7 +73,7 @@
   border-radius: 8px;
   border: 1px solid var(--border-subtle);
   background: var(--bg-input);
-  color: #f9fafb;
+  color: var(--text-main);
   font-size: 14px;
 }
 

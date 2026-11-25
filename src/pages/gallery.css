@@ -1,0 +1,210 @@
+.gallery-page {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  color: var(--text-main);
+}
+
+.gallery-page__header {
+  text-align: center;
+  padding: 3rem 1rem 1rem;
+}
+
+.gallery-page__title {
+  margin: 0;
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-main);
+}
+
+.gallery-page__subtitle {
+  margin: 0.75rem auto 0;
+  max-width: 40rem;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+.gallery-page__cta {
+  margin-top: 1.25rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--accent);
+  background-color: var(--accent);
+  color: var(--accent-contrast);
+  font-family: var(--font-main);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    transform 0.15s ease;
+}
+
+.gallery-page__cta:hover {
+  background-color: var(--accent-hover);
+  transform: translateY(-1px);
+}
+
+.gallery-controls {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+  padding: 0 2rem;
+  flex-wrap: wrap;
+}
+
+.gallery-controls__search,
+.gallery-controls__select {
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border-subtle);
+  background-color: var(--bg-input);
+  color: var(--text-main);
+  font-family: var(--font-main);
+  font-size: 1rem;
+  min-width: 15rem;
+  transition: border-color 0.2s ease;
+}
+
+.gallery-controls__select option {
+  background-color: var(--bg-card);
+  color: var(--text-main);
+}
+
+.gallery-controls__search:focus,
+.gallery-controls__select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+  gap: 2rem;
+  padding: 2rem;
+  width: 100%;
+  max-width: 80rem;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.gallery-card {
+  background-color: var(--bg-card);
+  border-radius: var(--radius);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border-subtle);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.gallery-card:hover {
+  box-shadow: 0 0 1rem var(--text-muted);
+}
+
+.gallery-card__image-wrap {
+  position: relative;
+  width: 100%;
+  height: 20rem;
+  overflow: hidden;
+  background: linear-gradient(135deg, #1a1a1d 0%, var(--border-subtle) 100%);
+  border-bottom: 0.125rem solid var(--accent);
+  flex-shrink: 0;
+}
+
+.gallery-card__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.gallery-card__placeholder {
+  width: 100%;
+  height: 20rem;
+  background: linear-gradient(135deg, #1a1a1d 0%, var(--border-subtle) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-size: 1.25rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.gallery-card__badge {
+  position: absolute;
+  bottom: 0.75rem;
+  left: 0.75rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 0.5rem;
+  background-color: var(--bg-header);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-main);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  z-index: 2;
+}
+
+.gallery-card__body {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.gallery-card__title {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.3;
+  min-height: 3.25rem;
+  color: var(--text-main);
+}
+
+.gallery-card__author {
+  margin: 0 0 1.5rem 0;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  flex-grow: 1;
+}
+
+.gallery-card__btn {
+  width: 100%;
+  margin-top: auto;
+  background-color: var(--accent);
+  color: var(--accent-contrast);
+  border: none;
+  padding: 0.875rem;
+  border-radius: 0.5rem;
+  font-family: var(--font-main);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.gallery-card__btn:hover {
+  background-color: var(--accent-hover);
+  box-shadow: 0 0.1rem 1rem var(--text-muted);
+}
+
+.gallery-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 1.25rem;
+  padding: 4rem 1rem;
+}
