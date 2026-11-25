@@ -4,6 +4,7 @@ import { createElement } from '../utils/dom';
 import { formatCurrency } from '../core/formatCurrency';
 import { openBidModal } from './bidModal';
 import { openAuthModal } from './AuthModal';
+import { openArtworkModal } from './artworkModal';
 import { placeBid } from '../api/bidsApi';
 import { getCurrentUser } from '../api/authApi';
 import { showToast } from './toast';
@@ -83,7 +84,23 @@ export function createLotCard(
   else if (lot.status === 'closed') btnText = 'Closed';
   else if (isLeading) btnText = 'You are leading';
 
+  const actions = createElement('div', 'lot-card__actions');
+
+  const detailsBtn = createElement(
+    'button',
+    'lot-card__btn lot-card__btn--secondary',
+    'View Details'
+  );
+  detailsBtn.type = 'button';
+  detailsBtn.addEventListener('click', () => {
+    openArtworkModal(lot, () => {}, {
+      user,
+      onBidSuccess,
+    });
+  });
+
   const bidBtn = createElement('button', 'lot-card__btn', btnText);
+  bidBtn.type = 'button';
 
   if (lot.status !== 'active' || isLeading) {
     bidBtn.setAttribute('disabled', 'true');
@@ -119,7 +136,8 @@ export function createLotCard(
     });
   }
 
-  content.append(title, author, priceBlock, bidBtn);
+  actions.append(detailsBtn, bidBtn);
+  content.append(title, author, priceBlock, actions);
   card.append(imgWrapper, content);
 
   return card;

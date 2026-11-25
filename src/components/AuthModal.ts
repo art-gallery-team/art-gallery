@@ -124,10 +124,18 @@ export function openAuthModal(options: AuthModalOptions = {}): void {
   document.addEventListener('keydown', handleKeyDown);
 
   closeBtn.addEventListener('click', closeModal);
-  backdrop.addEventListener('click', (event) => {
-    if (event.target === backdrop) {
+
+  let isMouseDownOnBackdrop = false;
+
+  backdrop.addEventListener('mousedown', (event) => {
+    isMouseDownOnBackdrop = event.target === backdrop;
+  });
+
+  backdrop.addEventListener('mouseup', (event) => {
+    if (isMouseDownOnBackdrop && event.target === backdrop) {
       closeModal();
     }
+    isMouseDownOnBackdrop = false;
   });
 
   switchBtn.addEventListener('click', () => {

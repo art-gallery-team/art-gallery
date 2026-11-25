@@ -103,8 +103,7 @@ main {
 }
 
 .lot-card:hover {
-  transform: translateY(-0.25rem);
-  box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.6);
+  box-shadow: 0 0.5rem 2rem var(--text-muted);
 }
 
 .lot-card__image {
@@ -177,11 +176,32 @@ main {
 
 .lot-card__btn:hover:not([disabled]) {
   background-color: var(--accent-hover);
+  box-shadow: 0 0 1rem var(--text-muted);
 }
 
 .lot-card__btn[disabled] {
   background-color: var(--text-muted);
   cursor: not-allowed;
+}
+
+.lot-card__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.lot-card__btn--secondary {
+  background-color: transparent;
+  color: var(--text-main);
+  border: 1px solid var(--border-subtle);
+  transition: 0.3s;
+}
+
+.lot-card__btn--secondary:hover:not([disabled]) {
+  background-color: var(--link-hover);
+  border-color: var(--accent);
+  color: var(--accent);
+  transition: 0.3s;
 }
 
 .loader,

@@ -23,13 +23,23 @@ export function renderAboutPage(container: HTMLElement, onNavigate: (path: strin
   description.textContent =
     'Art Gallery & Auction is a fullstack web platform where collectors can explore iconic artworks, filter lots by style and price, save favorites, and compete in real-time bidding.';
 
-  const ctaBtn = document.createElement('button');
-  ctaBtn.type = 'button';
-  ctaBtn.className = 'about-hero__cta';
-  ctaBtn.textContent = 'Enter Auction Hall →';
-  ctaBtn.addEventListener('click', () => onNavigate('/auction'));
+  const actions = document.createElement('div');
+  actions.className = 'about-hero__actions';
 
-  hero.append(badge, title, description, ctaBtn);
+  const galleryBtn = document.createElement('button');
+  galleryBtn.type = 'button';
+  galleryBtn.className = 'about-hero__cta';
+  galleryBtn.textContent = 'Explore Gallery →';
+  galleryBtn.addEventListener('click', () => onNavigate('/gallery'));
+
+  const auctionBtn = document.createElement('button');
+  auctionBtn.type = 'button';
+  auctionBtn.className = 'about-hero__cta about-hero__cta--secondary';
+  auctionBtn.textContent = 'Enter Auction Hall';
+  auctionBtn.addEventListener('click', () => onNavigate('/auction'));
+
+  actions.append(galleryBtn, auctionBtn);
+  hero.append(badge, title, description, actions);
 
   // Team block
   const teamSection = document.createElement('div');

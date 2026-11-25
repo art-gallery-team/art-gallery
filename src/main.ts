@@ -3,11 +3,12 @@ import './style.css';
 import { getCurrentUser, onAuthStateChange } from './api/authApi';
 import { openAuthModal } from './components/AuthModal';
 import { createHeader } from './components/Header';
+import { createFooter } from './components/Footer';
 import { renderAboutPage } from './pages/about';
+import { renderGalleryPage } from './pages/gallery';
 import { renderAuctionHall } from './pages/auction';
 import { renderProfilePage } from './pages/profile';
 import { applyTheme, getSavedTheme } from './utils/theme';
-import { createFooter } from './components/Footer';
 
 applyTheme(getSavedTheme());
 
@@ -50,12 +51,12 @@ function renderApp(): void {
   const footer = createFooter(navigate);
   app.append(header, mainContainer, footer);
 
-  if (path === '/auction') {
+  if (path === '/gallery') {
+    void renderGalleryPage(mainContainer, navigate);
+  } else if (path === '/auction') {
     void renderAuctionHall(mainContainer, currentUser);
-  } else if (path === '/profile') {
-    if (currentUser) {
-      void renderProfilePage(mainContainer, currentUser);
-    }
+  } else if (path === '/profile' && currentUser) {
+    void renderProfilePage(mainContainer, currentUser);
   } else {
     renderAboutPage(mainContainer, navigate);
   }

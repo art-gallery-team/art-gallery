@@ -35,7 +35,7 @@ export function createFooter(onNavigate: (path: string) => void): HTMLElement {
 
   navList.append(
     createLink('Auction Hall', '/auction'),
-    createLink('Gallery Preview', '/auction'),
+    createLink('Gallery Preview', '/gallery'),
     createLink('Past Auctions'),
     createLink('About Us', '/')
   );
