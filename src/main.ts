@@ -7,6 +7,7 @@ import { renderAboutPage } from './pages/about';
 import { renderAuctionHall } from './pages/auction';
 import { renderProfilePage } from './pages/profile';
 import { applyTheme, getSavedTheme } from './utils/theme';
+import { createFooter } from './components/Footer';
 
 applyTheme(getSavedTheme());
 
@@ -46,7 +47,8 @@ function renderApp(): void {
   });
 
   const mainContainer = document.createElement('main');
-  app.append(header, mainContainer);
+  const footer = createFooter(navigate);
+  app.append(header, mainContainer, footer);
 
   if (path === '/auction') {
     void renderAuctionHall(mainContainer, currentUser);
