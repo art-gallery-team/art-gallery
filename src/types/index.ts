@@ -8,6 +8,7 @@ export interface Lot {
   year: number;
   description: string;
   imageUrl: string;
+  modalImages?: string[];
   startPrice: number;
   currentPrice: number;
   minStep: number;
