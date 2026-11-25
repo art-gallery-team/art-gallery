@@ -51,6 +51,12 @@ export async function renderProfilePage(container: HTMLElement, user: User): Pro
       currentTab = tab;
       listContainer.replaceChildren();
 
+      if (tab === 'favorites') {
+        listContainer.classList.add('profile-list--wide');
+      } else {
+        listContainer.classList.remove('profile-list--wide');
+      }
+
       if (tab === 'purchases') {
         if (purchases.length === 0) {
           listContainer.append(createElement('p', 'empty-message', 'No purchases yet.'));

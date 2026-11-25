@@ -352,6 +352,7 @@ main {
   height: 20rem;
   overflow: hidden;
   background-color: var(--bg-surface);
+  flex-shrink: 0;
 }
 
 .lot-card__image {

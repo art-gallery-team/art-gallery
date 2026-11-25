@@ -48,6 +48,7 @@
   max-width: 100%;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   padding: 0;
+  margin: 0;
 }
 
 .bid-card {
@@ -116,4 +117,10 @@
   .bid-card {
     padding: 1.25rem;
   }
+}
+
+.profile-list--wide {
+  max-width: 80rem;
+  padding: 0 2rem;
+  margin: 0 auto;
 }
