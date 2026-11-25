@@ -9,6 +9,7 @@
   justify-content: center;
   gap: 1rem;
   margin-bottom: 2rem;
+  flex-wrap: wrap;
 }
 
 .profile-tabs__btn {
@@ -33,12 +34,19 @@
 }
 
 .profile-list {
-  max-width: 800px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 0 2rem 4rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
+}
+
+.profile-list .lots-grid {
+  width: 100%;
+  max-width: 100%;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  padding: 0;
 }
 
 .bid-card {

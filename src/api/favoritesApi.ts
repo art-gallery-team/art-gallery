@@ -5,8 +5,6 @@ interface FavoriteRow {
   lot_id: string;
 }
 
-const PG_UNIQUE_VIOLATION = '23505';
-
 export async function fetchUserFavoriteIds(userId: string): Promise<string[]> {
   const { data, error } = await supabase.from('favorites').select('lot_id').eq('user_id', userId);
 
@@ -18,9 +16,14 @@ export async function fetchUserFavoriteIds(userId: string): Promise<string[]> {
 }
 
 export async function addFavorite(userId: string, lotId: string): Promise<void> {
-  const { error } = await supabase.from('favorites').insert({ user_id: userId, lot_id: lotId });
+  const { error } = await supabase
+    .from('favorites')
+    .upsert(
+      { user_id: userId, lot_id: lotId },
+      { onConflict: 'user_id,lot_id', ignoreDuplicates: true }
+    );
 
-  if (error && error.code !== PG_UNIQUE_VIOLATION) {
+  if (error) {
     throw new Error(`Error while adding to favorites: ${error.message}`);
   }
 }
@@ -60,9 +63,10 @@ export async function getFavoriteLots(userId: string): Promise<Lot[]> {
 
   if (error) throw new Error(error.message);
 
-  return (data || []).map((row) => {
-    const rawLot = Array.isArray(row.lots) ? row.lots[0] : row.lots;
-    return {
+  return (data || [])
+    .map((row) => (Array.isArray(row.lots) ? row.lots[0] : row.lots))
+    .filter(Boolean)
+    .map((rawLot) => ({
       id: rawLot.id,
       title: rawLot.title,
       author: rawLot.author,
@@ -75,6 +79,5 @@ export async function getFavoriteLots(userId: string): Promise<Lot[]> {
       minStep: rawLot.min_step,
       status: rawLot.status,
       highestBidderId: rawLot.highest_bidder_id,
-    };
-  });
+    }));
 }

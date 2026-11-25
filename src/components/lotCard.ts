@@ -9,7 +9,13 @@ import { getCurrentUser } from '../api/authApi';
 import { showToast } from './toast';
 import { toggleFavorite } from '../api/favoritesApi';
 
-export function createLotCard(lot: Lot, user: User | null, onBidSuccess: () => void): HTMLElement {
+export function createLotCard(
+  lot: Lot,
+  user: User | null,
+  onBidSuccess: () => void,
+  isInitiallyFavorite: boolean = false,
+  onFavoriteToggle?: () => void
+): HTMLElement {
   const card = createElement('article', 'lot-card');
 
   if (lot.status !== 'active') {
@@ -30,18 +36,33 @@ export function createLotCard(lot: Lot, user: User | null, onBidSuccess: () => v
   };
   imgWrapper.append(img);
 
+  let isFavorite = isInitiallyFavorite;
   const favBtn = createElement('button', 'lot-card__fav-btn', '♥');
+  if (isFavorite) {
+    favBtn.classList.add('lot-card__fav-btn--active');
+  }
+
   favBtn.addEventListener('click', async (e) => {
     e.preventDefault();
-    const currentUser = await getCurrentUser();
-    if (!currentUser) return openAuthModal();
+    if (favBtn.disabled) return;
+
+    favBtn.disabled = true;
     try {
-      const isAdded = await toggleFavorite(currentUser.id, lot.id, false);
-      favBtn.classList.toggle('lot-card__fav-btn--active', isAdded);
-      showToast(isAdded ? 'Added to favorites!' : 'Removed', 'success');
+      const currentUser = await getCurrentUser();
+      if (!currentUser) {
+        openAuthModal();
+        return;
+      }
+
+      isFavorite = await toggleFavorite(currentUser.id, lot.id, isFavorite);
+      favBtn.classList.toggle('lot-card__fav-btn--active', isFavorite);
+      showToast(isFavorite ? 'Added to favorites!' : 'Removed from favorites', 'success');
+      onFavoriteToggle?.();
     } catch (error) {
       console.error('Failed to toggle favorite:', error);
       showToast('Failed to update favorites', 'error');
+    } finally {
+      favBtn.disabled = false;
     }
   });
   imgWrapper.append(favBtn);

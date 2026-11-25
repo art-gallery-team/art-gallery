@@ -1,4 +1,5 @@
 import { fetchLots } from '../api/lotsApi';
+import { fetchUserFavoriteIds } from '../api/favoritesApi';
 import { subscribeToAuctionUpdates } from '../api/realtimeApi';
 import { createLotCard } from '../components/lotCard';
 import { createElement } from '../utils/dom';
@@ -20,7 +21,12 @@ export async function renderAuctionHall(container: HTMLElement, user: User | nul
   container.append(loader);
 
   try {
-    let allLots = await fetchLots();
+    let currentUser = user;
+    let [allLots, favoriteIds] = await Promise.all([
+      fetchLots(),
+      currentUser ? fetchUserFavoriteIds(currentUser.id) : Promise.resolve<string[]>([]),
+    ]);
+
     container.replaceChildren();
 
     const title = createElement('h1', 'page-title', 'Auction Hall');
@@ -55,7 +61,11 @@ export async function renderAuctionHall(container: HTMLElement, user: User | nul
 
     const refreshLotsSilently = async (): Promise<void> => {
       try {
-        allLots = await fetchLots();
+        currentUser = await getCurrentUser();
+        [allLots, favoriteIds] = await Promise.all([
+          fetchLots(),
+          currentUser ? fetchUserFavoriteIds(currentUser.id) : Promise.resolve<string[]>([]),
+        ]);
         updateGrid();
       } catch (err) {
         console.error('Failed to refresh lots in realtime:', err);
@@ -84,12 +94,17 @@ export async function renderAuctionHall(container: HTMLElement, user: User | nul
         return;
       }
 
+      const favoriteSet = new Set(favoriteIds);
+
       result.forEach((lot) => {
         grid.append(
-          createLotCard(lot, user, async () => {
-            const freshUser = await getCurrentUser();
-            renderAuctionHall(container, freshUser);
-          })
+          createLotCard(
+            lot,
+            currentUser,
+            refreshLotsSilently,
+            favoriteSet.has(lot.id),
+            refreshLotsSilently
+          )
         );
       });
     };
