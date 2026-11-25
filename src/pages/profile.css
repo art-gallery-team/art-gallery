@@ -34,7 +34,8 @@
 }
 
 .profile-list {
-  max-width: 1200px;
+  max-width: 800px;
+  width: 100%;
   margin: 0 auto;
   padding: 0 2rem 4rem;
   display: flex;
