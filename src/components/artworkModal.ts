@@ -161,14 +161,14 @@ export function openArtworkModal(
   }
   if (lot.style) {
     meta.appendChild(
-      createElement('span', 'artwork-modal__tag', `${t('modal.style')}: ${lot.style}`)
+      createElement('span', 'artwork-modal__tag', `${t('modal.style')}: ${localized.style}`)
     );
   }
 
   const description = createElement(
     'p',
     'artwork-modal__description',
-    lot.description || t('modal.noDesc')
+    localized.description || t('modal.noDesc')
   );
 
   content.append(header, meta, description);
