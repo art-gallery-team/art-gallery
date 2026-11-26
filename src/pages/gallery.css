@@ -60,24 +60,23 @@
 .gallery-controls__select {
   padding: 0.75rem 1rem;
   border-radius: 0.5rem;
-  border: 1px solid var(--border-subtle);
-  background-color: var(--bg-input);
-  color: var(--text-main);
-  font-size: 1rem;
-  min-width: 20rem;
-  color-scheme: dark;
-  transition: border-color 0.2s ease;
-}
-
-.gallery-controls__select option {
+  border: 1px solid rgba(255, 255, 255, 0.1);
   background-color: var(--bg-card);
   color: var(--text-main);
+  font-size: 1rem;
+  min-width: 15rem;
+  color-scheme: dark;
 }
 
 .gallery-controls__search:focus,
 .gallery-controls__select:focus {
   outline: none;
   border-color: var(--accent);
+}
+
+.gallery-controls__select option {
+  background-color: var(--bg-card);
+  color: var(--text-main);
 }
 
 .gallery-grid {
