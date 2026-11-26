@@ -33,25 +33,85 @@ export function openArtworkModal(
   closeBtn.setAttribute('aria-label', 'Close modal');
   closeBtn.addEventListener('click', () => dialog.close());
 
+  const images =
+    lot.modalImages && lot.modalImages.length > 0
+      ? lot.modalImages
+      : lot.imageUrl
+        ? [lot.imageUrl]
+        : [];
+
+  let currentIndex = 0;
   const mediaWrapper = createElement('div', 'artwork-modal__media');
 
-  const showPlaceholder = (): void => {
-    const placeholder = createElement('div', 'artwork-modal__placeholder', 'Artwork');
-    mediaWrapper.replaceChildren(placeholder);
+  const showPrevImage = (): void => {
+    if (images.length <= 1) return;
+    currentIndex = (currentIndex - 1 + images.length) % images.length;
+    renderMedia();
   };
 
-  if (lot.imageUrl) {
+  const showNextImage = (): void => {
+    if (images.length <= 1) return;
+    currentIndex = (currentIndex + 1) % images.length;
+    renderMedia();
+  };
+
+  const renderMedia = (): void => {
+    mediaWrapper.replaceChildren();
+
+    const showPlaceholder = (): void => {
+      const placeholder = createElement('div', 'artwork-modal__placeholder', 'Artwork');
+      mediaWrapper.replaceChildren(placeholder);
+    };
+
+    if (images.length === 0) {
+      showPlaceholder();
+      return;
+    }
+
     const img = createElement('img', 'artwork-modal__image');
-    img.src = lot.imageUrl;
-    img.alt = `${lot.title} by ${lot.author}`;
+    img.src = images[currentIndex];
+    img.alt = `${lot.title} by ${lot.author} (${currentIndex + 1}/${images.length})`;
     img.onerror = () => {
       img.onerror = null;
-      showPlaceholder();
+
+      if (lot.imageUrl && images[currentIndex] !== lot.imageUrl) {
+        img.src = lot.imageUrl;
+      } else {
+        showPlaceholder();
+      }
     };
     mediaWrapper.appendChild(img);
-  } else {
-    showPlaceholder();
-  }
+
+    if (images.length > 1) {
+      const prevBtn = createElement(
+        'button',
+        'artwork-modal__nav-btn artwork-modal__nav-btn--prev',
+        '‹'
+      );
+      prevBtn.type = 'button';
+      prevBtn.setAttribute('aria-label', 'Previous image');
+      prevBtn.addEventListener('click', showPrevImage);
+
+      const nextBtn = createElement(
+        'button',
+        'artwork-modal__nav-btn artwork-modal__nav-btn--next',
+        '›'
+      );
+      nextBtn.type = 'button';
+      nextBtn.setAttribute('aria-label', 'Next image');
+      nextBtn.addEventListener('click', showNextImage);
+
+      const counter = createElement(
+        'span',
+        'artwork-modal__counter',
+        `${currentIndex + 1} / ${images.length}`
+      );
+
+      mediaWrapper.append(prevBtn, nextBtn, counter);
+    }
+  };
+
+  renderMedia();
 
   const content = createElement('div', 'artwork-modal__content');
   const header = createElement('div', 'artwork-modal__header');
@@ -179,6 +239,13 @@ export function openArtworkModal(
   container.append(closeBtn, mediaWrapper, content);
   dialog.appendChild(container);
 
+  const handleKeyDown = (event: KeyboardEvent): void => {
+    if (event.key === 'ArrowLeft') showPrevImage();
+    if (event.key === 'ArrowRight') showNextImage();
+  };
+
+  document.addEventListener('keydown', handleKeyDown);
+
   let isMouseDownOnBackdrop = false;
 
   dialog.addEventListener('mousedown', (event) => {
@@ -193,6 +260,7 @@ export function openArtworkModal(
   });
 
   dialog.addEventListener('close', () => {
+    document.removeEventListener('keydown', handleKeyDown);
     dialog.remove();
   });
 
