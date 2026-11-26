@@ -43,6 +43,22 @@ export function openArtworkModal(
   let currentIndex = 0;
   const mediaWrapper = createElement('div', 'artwork-modal__media');
 
+  let touchStartX = 0;
+  let touchEndX = 0;
+
+  const handleTouchStart = (e: TouchEvent): void => {
+    touchStartX = e.changedTouches[0].screenX;
+  };
+
+  const handleTouchEnd = (e: TouchEvent): void => {
+    touchEndX = e.changedTouches[0].screenX;
+    if (touchEndX < touchStartX - 50) showNextImage();
+    if (touchEndX > touchStartX + 50) showPrevImage();
+  };
+
+  mediaWrapper.addEventListener('touchstart', handleTouchStart, { passive: true });
+  mediaWrapper.addEventListener('touchend', handleTouchEnd, { passive: true });
+
   const showPrevImage = (): void => {
     if (images.length <= 1) return;
     currentIndex = (currentIndex - 1 + images.length) % images.length;
@@ -260,6 +276,8 @@ export function openArtworkModal(
   });
 
   dialog.addEventListener('close', () => {
+    mediaWrapper.removeEventListener('touchstart', handleTouchStart);
+    mediaWrapper.removeEventListener('touchend', handleTouchEnd);
     document.removeEventListener('keydown', handleKeyDown);
     dialog.remove();
   });

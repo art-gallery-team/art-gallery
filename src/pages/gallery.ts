@@ -30,7 +30,7 @@ export async function renderGalleryPage(
 
   const searchInput = createElement('input', 'gallery-controls__search');
   searchInput.type = 'search';
-  searchInput.placeholder = 'Search by artwork title or artist...';
+  searchInput.placeholder = 'Search by title or author...';
   searchInput.setAttribute('aria-label', 'Search by artwork title or artist');
 
   const styleSelect = createElement('select', 'gallery-controls__select');
