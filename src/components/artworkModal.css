@@ -64,7 +64,7 @@
 .artwork-modal__container {
   position: relative;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1.2fr 1fr;
   min-height: 26rem;
   overflow-y: auto;
   max-height: 100%;
@@ -132,6 +132,18 @@
   object-fit: contain;
   display: block;
   background-color: var(--bg-surface);
+  animation: modalImageFadeIn 0.3s ease-in-out;
+}
+
+@keyframes modalImageFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .artwork-modal__placeholder {
