@@ -7,7 +7,9 @@ import { placeBid } from '../api/bidsApi';
 import { openAuthModal } from './AuthModal';
 import { openBidModal } from './bidModal';
 import { showToast } from './toast';
+import { t } from '../utils/i18n';
 import './artworkModal.css';
+import { getLocalizedLot } from '../utils/lotTranslations';
 
 export interface ArtworkModalAuctionOptions {
   user: User | null;
@@ -19,6 +21,7 @@ export function openArtworkModal(
   onGoToAuction: () => void,
   auctionOptions?: ArtworkModalAuctionOptions
 ): void {
+  const localized = getLocalizedLot(lot);
   const existingModal = document.querySelector<HTMLDialogElement>('dialog.artwork-modal');
   if (existingModal) {
     existingModal.close();
@@ -86,7 +89,7 @@ export function openArtworkModal(
 
     const img = createElement('img', 'artwork-modal__image');
     img.src = images[currentIndex];
-    img.alt = `${lot.title} by ${lot.author} (${currentIndex + 1}/${images.length})`;
+    img.alt = `${localized.title} ${t('modal.by')} ${localized.author} (${currentIndex + 1}/${images.length})`;
     img.onerror = () => {
       img.onerror = null;
 
@@ -133,30 +136,39 @@ export function openArtworkModal(
   const header = createElement('div', 'artwork-modal__header');
 
   const isActive = lot.status === 'active';
-  const statusLabel = lot.status === 'closed' ? 'Closed' : isActive ? 'In Auction' : 'Sold';
+  const statusLabel =
+    lot.status === 'closed' ? t('modal.closed') : isActive ? t('modal.inAuction') : t('modal.sold');
   const statusBadge = createElement(
     'span',
     `artwork-modal__status ${isActive ? 'artwork-modal__status--active' : 'artwork-modal__status--sold'}`,
     statusLabel
   );
 
-  const title = createElement('h2', 'artwork-modal__title', lot.title);
-  const author = createElement('p', 'artwork-modal__author', `by ${lot.author}`);
+  const title = createElement('h2', 'artwork-modal__title', localized.title);
+  const author = createElement(
+    'p',
+    'artwork-modal__author',
+    `${t('modal.by')} ${localized.author}`
+  );
 
   header.append(statusBadge, title, author);
 
   const meta = createElement('div', 'artwork-modal__meta');
   if (lot.year) {
-    meta.appendChild(createElement('span', 'artwork-modal__tag', `Year: ${lot.year}`));
+    meta.appendChild(
+      createElement('span', 'artwork-modal__tag', `${t('modal.year')}: ${lot.year}`)
+    );
   }
   if (lot.style) {
-    meta.appendChild(createElement('span', 'artwork-modal__tag', `Style: ${lot.style}`));
+    meta.appendChild(
+      createElement('span', 'artwork-modal__tag', `${t('modal.style')}: ${localized.style}`)
+    );
   }
 
   const description = createElement(
     'p',
     'artwork-modal__description',
-    lot.description || 'No detailed curatorial description provided for this artwork.'
+    localized.description || t('modal.noDesc')
   );
 
   content.append(header, meta, description);
@@ -166,7 +178,7 @@ export function openArtworkModal(
 
     const currentStat = createElement('div', 'artwork-modal__bid-stat');
     currentStat.append(
-      createElement('span', 'artwork-modal__bid-label', 'Current Price'),
+      createElement('span', 'artwork-modal__bid-label', t('lot.currentPrice')),
       createElement(
         'span',
         'artwork-modal__bid-value artwork-modal__bid-value--highlight',
@@ -176,13 +188,13 @@ export function openArtworkModal(
 
     const startStat = createElement('div', 'artwork-modal__bid-stat');
     startStat.append(
-      createElement('span', 'artwork-modal__bid-label', 'Start Price'),
+      createElement('span', 'artwork-modal__bid-label', t('modal.startPrice')),
       createElement('span', 'artwork-modal__bid-value', formatCurrency(lot.startPrice))
     );
 
     const stepStat = createElement('div', 'artwork-modal__bid-stat');
     stepStat.append(
-      createElement('span', 'artwork-modal__bid-label', 'Min Step'),
+      createElement('span', 'artwork-modal__bid-label', t('modal.minStep')),
       createElement('span', 'artwork-modal__bid-value', `+${formatCurrency(lot.minStep)}`)
     );
 
@@ -196,10 +208,10 @@ export function openArtworkModal(
     const isLeading =
       auctionOptions.user !== null && lot.highestBidderId === auctionOptions.user.id;
 
-    let btnText = 'Place a Bid';
-    if (lot.status === 'sold') btnText = 'Sold';
-    else if (lot.status === 'closed') btnText = 'Closed';
-    else if (isLeading) btnText = 'You are leading';
+    let btnText = t('lot.placeBid');
+    if (lot.status === 'sold') btnText = t('lot.sold');
+    else if (lot.status === 'closed') btnText = t('lot.closed');
+    else if (isLeading) btnText = t('lot.leading');
 
     const bidBtn = createElement('button', 'artwork-modal__cta', btnText);
     bidBtn.type = 'button';
@@ -242,7 +254,7 @@ export function openArtworkModal(
 
     actions.appendChild(bidBtn);
   } else {
-    const auctionBtn = createElement('button', 'artwork-modal__cta', 'Go to Auction Hall');
+    const auctionBtn = createElement('button', 'artwork-modal__cta', t('modal.goToAuction'));
     auctionBtn.type = 'button';
     auctionBtn.addEventListener('click', () => {
       dialog.close();

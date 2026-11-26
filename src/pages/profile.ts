@@ -9,6 +9,7 @@ import { createBidCard } from '../components/bidCard';
 import { createPurchaseCard } from '../components/purchaseCard';
 import { createLotCard } from '../components/lotCard';
 import { createElement } from '../utils/dom';
+import { t } from '../utils/i18n';
 
 let unsubscribeProfileRealtime: (() => void) | null = null;
 
@@ -19,7 +20,7 @@ export async function renderProfilePage(container: HTMLElement, user: User): Pro
   }
 
   container.replaceChildren();
-  const loader = createElement('div', 'loader', 'Loading your profile...');
+  const loader = createElement('div', 'loader', t('profile.loading'));
   container.append(loader);
 
   try {
@@ -31,18 +32,18 @@ export async function renderProfilePage(container: HTMLElement, user: User): Pro
     let currentTab: 'active' | 'history' | 'purchases' | 'favorites' = 'active';
     container.replaceChildren();
 
-    const title = createElement('h1', 'page-title', 'Personal Cabinet');
-    const email = createElement('p', 'profile-email', `Logged in as: ${user.email}`);
+    const title = createElement('h1', 'page-title', t('profile.title'));
+    const email = createElement('p', 'profile-email', `${t('profile.loggedInAs')}: ${user.email}`);
 
     const tabsContainer = createElement('div', 'profile-tabs');
     const activeTabBtn = createElement(
       'button',
       'profile-tabs__btn profile-tabs__btn--active',
-      'Active Bids'
+      t('profile.tabActive')
     );
-    const historyTabBtn = createElement('button', 'profile-tabs__btn', 'Bidding History');
-    const purchasesTabBtn = createElement('button', 'profile-tabs__btn', 'My Purchases');
-    const favTabBtn = createElement('button', 'profile-tabs__btn', 'Favorites');
+    const historyTabBtn = createElement('button', 'profile-tabs__btn', t('profile.tabHistory'));
+    const purchasesTabBtn = createElement('button', 'profile-tabs__btn', t('profile.tabPurchases'));
+    const favTabBtn = createElement('button', 'profile-tabs__btn', t('profile.tabFavorites'));
     tabsContainer.append(activeTabBtn, historyTabBtn, purchasesTabBtn, favTabBtn);
 
     const listContainer = createElement('div', 'profile-list');
@@ -59,7 +60,7 @@ export async function renderProfilePage(container: HTMLElement, user: User): Pro
 
       if (tab === 'purchases') {
         if (purchases.length === 0) {
-          listContainer.append(createElement('p', 'empty-message', 'No purchases yet.'));
+          listContainer.append(createElement('p', 'empty-message', t('profile.noPurchases')));
           return;
         }
         purchases.forEach((purchase) => listContainer.append(createPurchaseCard(purchase)));
@@ -68,7 +69,7 @@ export async function renderProfilePage(container: HTMLElement, user: User): Pro
 
       if (tab === 'favorites') {
         if (favorites.length === 0) {
-          listContainer.append(createElement('p', 'empty-message', 'No favorites yet.'));
+          listContainer.append(createElement('p', 'empty-message', t('profile.noFavorites')));
           return;
         }
         const grid = createElement('div', 'lots-grid');
@@ -80,7 +81,7 @@ export async function renderProfilePage(container: HTMLElement, user: User): Pro
       }
 
       if (bids.length === 0) {
-        listContainer.append(createElement('p', 'empty-message', 'You have no bids yet.'));
+        listContainer.append(createElement('p', 'empty-message', t('profile.noBids')));
         return;
       }
 
@@ -94,7 +95,7 @@ export async function renderProfilePage(container: HTMLElement, user: User): Pro
         });
         const uniqueActiveBids = Array.from(highestBidsMap.values());
         if (uniqueActiveBids.length === 0) {
-          listContainer.append(createElement('p', 'empty-message', 'No active bids.'));
+          listContainer.append(createElement('p', 'empty-message', t('profile.noActiveBids')));
           return;
         }
         uniqueActiveBids.forEach((bid) =>
@@ -155,7 +156,7 @@ export async function renderProfilePage(container: HTMLElement, user: User): Pro
     });
   } catch (error) {
     container.replaceChildren();
-    container.append(createElement('div', 'error-message', 'Failed to load profile data.'));
+    container.append(createElement('div', 'error-message', t('profile.error')));
     console.error(error);
   }
 }

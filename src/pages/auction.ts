@@ -5,6 +5,8 @@ import { createLotCard } from '../components/lotCard';
 import { createElement } from '../utils/dom';
 import { filterLots } from '../core/filterLots';
 import { debounce } from '../utils/debounce';
+import { t } from '../utils/i18n';
+import { getLocalizedLot } from '../utils/lotTranslations';
 import type { User } from '@supabase/supabase-js';
 import { getCurrentUser } from '../api/authApi';
 
@@ -17,7 +19,7 @@ export async function renderAuctionHall(container: HTMLElement, user: User | nul
   }
 
   container.replaceChildren();
-  const loader = createElement('div', 'loader', 'Loading masterpieces...');
+  const loader = createElement('div', 'loader', t('auction.loading'));
   container.append(loader);
 
   try {
@@ -29,30 +31,36 @@ export async function renderAuctionHall(container: HTMLElement, user: User | nul
 
     container.replaceChildren();
 
-    const title = createElement('h1', 'page-title', 'Auction Hall');
+    const title = createElement('h1', 'page-title', t('auction.title'));
     const controls = createElement('div', 'auction-controls');
     const searchInput = createElement('input', 'auction-controls__search');
     searchInput.type = 'text';
-    searchInput.placeholder = 'Search by title or author...';
+    searchInput.placeholder = t('auction.searchPlaceholder');
 
     const styleSelect = createElement('select', 'auction-controls__select');
-    const defaultOption = createElement('option', '', 'All Styles');
+    const defaultOption = createElement('option', '', t('gallery.allStyles'));
     defaultOption.value = 'all';
-
-    const styles = Array.from(new Set(allLots.map((lot) => lot.style)));
     styleSelect.append(defaultOption);
-    styles.forEach((style) => {
-      const opt = createElement('option', '', style);
-      opt.value = style;
+
+    const styleMap = new Map<string, string>();
+    allLots.forEach((lot) => {
+      if (lot.style && !styleMap.has(lot.style)) {
+        styleMap.set(lot.style, getLocalizedLot(lot).style);
+      }
+    });
+
+    styleMap.forEach((localizedStyle, rawStyle) => {
+      const opt = createElement('option', '', localizedStyle);
+      opt.value = rawStyle;
       styleSelect.append(opt);
     });
 
     const sortSelect = createElement('select', 'auction-controls__select');
-    const sortDefault = createElement('option', '', 'Default (Active first)');
+    const sortDefault = createElement('option', '', t('auction.sortDefault'));
     sortDefault.value = 'default';
-    const sortPriceDesc = createElement('option', '', 'Price: High to Low');
+    const sortPriceDesc = createElement('option', '', t('auction.sortPriceDesc'));
     sortPriceDesc.value = 'price-desc';
-    const sortPriceAsc = createElement('option', '', 'Price: Low to High');
+    const sortPriceAsc = createElement('option', '', t('auction.sortPriceAsc'));
     sortPriceAsc.value = 'price-asc';
     sortSelect.append(sortDefault, sortPriceDesc, sortPriceAsc);
 
@@ -73,11 +81,23 @@ export async function renderAuctionHall(container: HTMLElement, user: User | nul
     };
 
     const updateGrid = (): void => {
-      const query = searchInput.value;
+      const query = searchInput.value.trim().toLowerCase();
       const selectedStyle = styleSelect.value;
       const sortBy = sortSelect.value;
 
-      let result = filterLots(allLots, query, selectedStyle, null, null);
+      let result = filterLots(allLots, '', selectedStyle, null, null);
+      if (query) {
+        result = result.filter((lot) => {
+          const localized = getLocalizedLot(lot);
+          return (
+            lot.title.toLowerCase().includes(query) ||
+            lot.author.toLowerCase().includes(query) ||
+            localized.title.toLowerCase().includes(query) ||
+            localized.author.toLowerCase().includes(query)
+          );
+        });
+      }
+
       result = [...result].sort((a, b) => {
         const aIsActive = a.status === 'active';
         const bIsActive = b.status === 'active';
@@ -90,7 +110,7 @@ export async function renderAuctionHall(container: HTMLElement, user: User | nul
 
       grid.replaceChildren();
       if (result.length === 0) {
-        grid.append(createElement('p', 'empty-message', 'No lots found matching your criteria.'));
+        grid.append(createElement('p', 'empty-message', t('auction.empty')));
         return;
       }
 
@@ -123,9 +143,7 @@ export async function renderAuctionHall(container: HTMLElement, user: User | nul
     });
   } catch (error) {
     container.replaceChildren();
-    container.append(
-      createElement('div', 'error-message', 'Failed to load lots. Please try again later.')
-    );
+    container.append(createElement('div', 'error-message', t('auction.error')));
     console.error(error);
   }
 }

@@ -9,6 +9,7 @@ import { renderGalleryPage } from './pages/gallery';
 import { renderAuctionHall } from './pages/auction';
 import { renderProfilePage } from './pages/profile';
 import { applyTheme, getSavedTheme } from './utils/theme';
+import { onLanguageChange } from './utils/i18n';
 
 applyTheme(getSavedTheme());
 
@@ -67,6 +68,10 @@ async function init(): Promise<void> {
 
   onAuthStateChange((user) => {
     currentUser = user;
+    renderApp();
+  });
+
+  onLanguageChange(() => {
     renderApp();
   });
 
