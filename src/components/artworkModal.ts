@@ -9,6 +9,7 @@ import { openBidModal } from './bidModal';
 import { showToast } from './toast';
 import { t } from '../utils/i18n';
 import './artworkModal.css';
+import { getLocalizedLot } from '../utils/lotTranslations';
 
 export interface ArtworkModalAuctionOptions {
   user: User | null;
@@ -20,6 +21,7 @@ export function openArtworkModal(
   onGoToAuction: () => void,
   auctionOptions?: ArtworkModalAuctionOptions
 ): void {
+  const localized = getLocalizedLot(lot);
   const existingModal = document.querySelector<HTMLDialogElement>('dialog.artwork-modal');
   if (existingModal) {
     existingModal.close();
@@ -34,25 +36,101 @@ export function openArtworkModal(
   closeBtn.setAttribute('aria-label', 'Close modal');
   closeBtn.addEventListener('click', () => dialog.close());
 
+  const images =
+    lot.modalImages && lot.modalImages.length > 0
+      ? lot.modalImages
+      : lot.imageUrl
+        ? [lot.imageUrl]
+        : [];
+
+  let currentIndex = 0;
   const mediaWrapper = createElement('div', 'artwork-modal__media');
 
-  const showPlaceholder = (): void => {
-    const placeholder = createElement('div', 'artwork-modal__placeholder', 'Artwork');
-    mediaWrapper.replaceChildren(placeholder);
+  let touchStartX = 0;
+  let touchEndX = 0;
+
+  const handleTouchStart = (e: TouchEvent): void => {
+    touchStartX = e.changedTouches[0].screenX;
   };
 
-  if (lot.imageUrl) {
+  const handleTouchEnd = (e: TouchEvent): void => {
+    touchEndX = e.changedTouches[0].screenX;
+    if (touchEndX < touchStartX - 50) showNextImage();
+    if (touchEndX > touchStartX + 50) showPrevImage();
+  };
+
+  mediaWrapper.addEventListener('touchstart', handleTouchStart, { passive: true });
+  mediaWrapper.addEventListener('touchend', handleTouchEnd, { passive: true });
+
+  const showPrevImage = (): void => {
+    if (images.length <= 1) return;
+    currentIndex = (currentIndex - 1 + images.length) % images.length;
+    renderMedia();
+  };
+
+  const showNextImage = (): void => {
+    if (images.length <= 1) return;
+    currentIndex = (currentIndex + 1) % images.length;
+    renderMedia();
+  };
+
+  const renderMedia = (): void => {
+    mediaWrapper.replaceChildren();
+
+    const showPlaceholder = (): void => {
+      const placeholder = createElement('div', 'artwork-modal__placeholder', 'Artwork');
+      mediaWrapper.replaceChildren(placeholder);
+    };
+
+    if (images.length === 0) {
+      showPlaceholder();
+      return;
+    }
+
     const img = createElement('img', 'artwork-modal__image');
-    img.src = lot.imageUrl;
-    img.alt = `${lot.title} ${t('modal.by')} ${lot.author}`;
+    img.src = images[currentIndex];
+    img.alt = `${localized.title} ${t('modal.by')} ${localized.author} (${currentIndex + 1}/${images.length})`;
     img.onerror = () => {
       img.onerror = null;
-      showPlaceholder();
+
+      if (lot.imageUrl && images[currentIndex] !== lot.imageUrl) {
+        img.src = lot.imageUrl;
+      } else {
+        showPlaceholder();
+      }
     };
     mediaWrapper.appendChild(img);
-  } else {
-    showPlaceholder();
-  }
+
+    if (images.length > 1) {
+      const prevBtn = createElement(
+        'button',
+        'artwork-modal__nav-btn artwork-modal__nav-btn--prev',
+        '‹'
+      );
+      prevBtn.type = 'button';
+      prevBtn.setAttribute('aria-label', 'Previous image');
+      prevBtn.addEventListener('click', showPrevImage);
+
+      const nextBtn = createElement(
+        'button',
+        'artwork-modal__nav-btn artwork-modal__nav-btn--next',
+        '›'
+      );
+      nextBtn.type = 'button';
+      nextBtn.setAttribute('aria-label', 'Next image');
+      nextBtn.addEventListener('click', showNextImage);
+
+      const counter = createElement(
+        'span',
+        'artwork-modal__counter',
+        `${currentIndex + 1} / ${images.length}`
+      );
+
+      mediaWrapper.append(prevBtn, nextBtn, counter);
+    }
+  };
+
+  renderMedia();
 
   const content = createElement('div', 'artwork-modal__content');
   const header = createElement('div', 'artwork-modal__header');
@@ -66,8 +144,12 @@ export function openArtworkModal(
     statusLabel
   );
 
-  const title = createElement('h2', 'artwork-modal__title', lot.title);
-  const author = createElement('p', 'artwork-modal__author', `${t('modal.by')} ${lot.author}`);
+  const title = createElement('h2', 'artwork-modal__title', localized.title);
+  const author = createElement(
+    'p',
+    'artwork-modal__author',
+    `${t('modal.by')} ${localized.author}`
+  );
 
   header.append(statusBadge, title, author);
 
@@ -185,6 +267,13 @@ export function openArtworkModal(
   container.append(closeBtn, mediaWrapper, content);
   dialog.appendChild(container);
 
+  const handleKeyDown = (event: KeyboardEvent): void => {
+    if (event.key === 'ArrowLeft') showPrevImage();
+    if (event.key === 'ArrowRight') showNextImage();
+  };
+
+  document.addEventListener('keydown', handleKeyDown);
+
   let isMouseDownOnBackdrop = false;
 
   dialog.addEventListener('mousedown', (event) => {
@@ -199,6 +288,9 @@ export function openArtworkModal(
   });
 
   dialog.addEventListener('close', () => {
+    mediaWrapper.removeEventListener('touchstart', handleTouchStart);
+    mediaWrapper.removeEventListener('touchend', handleTouchEnd);
+    document.removeEventListener('keydown', handleKeyDown);
     dialog.remove();
   });
 

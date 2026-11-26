@@ -86,8 +86,10 @@ main {
   grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
   gap: 2rem;
   padding: 2rem;
+  width: 100%;
   max-width: 80rem;
   margin: 0 auto;
+  box-sizing: border-box;
 }
 
 .lot-card {

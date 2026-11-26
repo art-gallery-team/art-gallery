@@ -29,7 +29,7 @@ const translations = {
     'gallery.title': 'Art Gallery',
     'gallery.subtitle': 'Permanent & current exhibition collection. Explore artworks in detail.',
     'gallery.ctaAuction': 'Enter Auction Hall →',
-    'gallery.searchPlaceholder': 'Search by artwork title or artist...',
+    'gallery.searchPlaceholder': 'Search by title or artist...',
     'gallery.allStyles': 'All Styles',
     'gallery.loading': 'Loading exhibition...',
     'gallery.empty': 'No artworks match your filter criteria.',
