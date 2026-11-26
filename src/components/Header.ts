@@ -12,8 +12,13 @@ export interface HeaderOptions {
 }
 
 export function createHeader({ currentPath, user, onNavigate }: HeaderOptions): HTMLElement {
+  document.body.style.overflow = '';
+
   const header = document.createElement('header');
   header.className = 'app-header';
+
+  const backdrop = document.createElement('div');
+  backdrop.className = 'app-header__backdrop';
 
   const inner = document.createElement('div');
   inner.className = 'app-header__inner';
@@ -22,7 +27,42 @@ export function createHeader({ currentPath, user, onNavigate }: HeaderOptions): 
   logo.type = 'button';
   logo.className = 'app-header__logo';
   logo.textContent = 'Art Gallery & Auction';
-  logo.addEventListener('click', () => onNavigate('/'));
+
+  const burgerBtn = document.createElement('button');
+  burgerBtn.type = 'button';
+  burgerBtn.className = 'app-header__burger';
+  burgerBtn.setAttribute('aria-label', 'Toggle navigation menu');
+  burgerBtn.setAttribute('aria-expanded', 'false');
+  burgerBtn.textContent = '☰';
+
+  const menuContainer = document.createElement('div');
+  menuContainer.className = 'app-header__menu';
+
+  const closeMenu = (): void => {
+    header.classList.remove('app-header--menu-open');
+    burgerBtn.setAttribute('aria-expanded', 'false');
+    burgerBtn.textContent = '☰';
+    document.body.style.overflow = '';
+  };
+
+  const toggleMenu = (): void => {
+    const isOpen = header.classList.toggle('app-header--menu-open');
+    burgerBtn.setAttribute('aria-expanded', String(isOpen));
+    burgerBtn.textContent = isOpen ? '✕' : '☰';
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+  };
+
+  burgerBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleMenu();
+  });
+
+  backdrop.addEventListener('click', closeMenu);
+
+  logo.addEventListener('click', () => {
+    closeMenu();
+    onNavigate('/');
+  });
 
   const nav = document.createElement('nav');
   nav.className = 'app-header__nav';
@@ -42,12 +82,18 @@ export function createHeader({ currentPath, user, onNavigate }: HeaderOptions): 
       linkBtn.classList.add('app-header__link--active');
     }
     linkBtn.textContent = label;
-    linkBtn.addEventListener('click', () => onNavigate(path));
+    linkBtn.addEventListener('click', () => {
+      closeMenu();
+      onNavigate(path);
+    });
     nav.append(linkBtn);
   });
 
   const authActions = document.createElement('div');
   authActions.className = 'app-header__auth';
+
+  const controlsRow = document.createElement('div');
+  controlsRow.className = 'app-header__controls-row';
 
   const langSelect = document.createElement('select');
   langSelect.className = 'app-header__lang-select';
@@ -94,38 +140,64 @@ export function createHeader({ currentPath, user, onNavigate }: HeaderOptions): 
     updateThemeLabel(newTheme);
   });
 
-  authActions.prepend(langSelect, themeBtn);
-
   if (user) {
-    const userEmail = document.createElement('span');
+    const userGroup = document.createElement('div');
+    userGroup.className = 'app-header__user-group';
+
+    const userEmail = document.createElement('button');
+    userEmail.type = 'button';
     userEmail.className = 'app-header__user';
     userEmail.textContent = user.email ?? t('header.collector');
+    userEmail.title = t('nav.profile');
+    userEmail.addEventListener('click', () => {
+      closeMenu();
+      onNavigate('/profile');
+    });
 
     const logoutBtn = document.createElement('button');
     logoutBtn.type = 'button';
-    logoutBtn.className = 'app-header__btn app-header__btn--outline';
+    logoutBtn.className = 'app-header__btn app-header__btn--outline app-header__auth-btn';
     logoutBtn.textContent = t('auth.signOut');
     logoutBtn.addEventListener('click', async () => {
+      closeMenu();
       await signOut();
       if (currentPath === '/profile') {
         onNavigate('/');
       }
     });
 
-    authActions.append(userEmail, logoutBtn);
+    userGroup.append(userEmail, logoutBtn);
+    authActions.append(userGroup);
   } else {
     const loginBtn = document.createElement('button');
     loginBtn.type = 'button';
-    loginBtn.className = 'app-header__btn';
+    loginBtn.className = 'app-header__btn app-header__auth-btn';
     loginBtn.textContent = t('auth.signIn');
     loginBtn.addEventListener('click', () => {
+      closeMenu();
       openAuthModal();
     });
 
     authActions.append(loginBtn);
   }
 
-  inner.append(logo, nav, authActions);
-  header.append(inner);
+  controlsRow.append(langSelect, themeBtn);
+  authActions.append(controlsRow);
+
+  const handleDocumentKeyDown = (event: KeyboardEvent): void => {
+    if (!document.body.contains(header)) {
+      document.removeEventListener('keydown', handleDocumentKeyDown);
+      return;
+    }
+    if (event.key === 'Escape' && header.classList.contains('app-header--menu-open')) {
+      closeMenu();
+    }
+  };
+
+  document.addEventListener('keydown', handleDocumentKeyDown);
+
+  menuContainer.append(nav, authActions);
+  inner.append(logo, burgerBtn, menuContainer);
+  header.append(backdrop, inner);
   return header;
 }
