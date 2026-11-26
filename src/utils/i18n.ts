@@ -48,6 +48,12 @@ const translations = {
     'lot.closed': 'Closed',
     'lot.leading': 'You are leading',
     'lot.viewDetails': 'View Details',
+    'auction.loading': 'Loading masterpieces...',
+    'auction.sortDefault': 'Default (Active first)',
+    'auction.sortPriceDesc': 'Price: High to Low',
+    'auction.sortPriceAsc': 'Price: Low to High',
+    'auction.empty': 'No lots found matching your criteria.',
+    'auction.error': 'Failed to load lots. Please try again later.',
 
     // Artwork Modal
     'modal.inAuction': 'In Auction',
@@ -100,6 +106,63 @@ const translations = {
     'toast.favRemoved': 'Removed from favorites',
     'toast.favError': 'Failed to update favorites',
     'toast.bidSuccess': 'Bid placed successfully!',
+
+    // About
+    'about.marina.name': 'Marina',
+    'about.marina.role': 'Fullstack & Backend Integration',
+    'about.marina.contrib':
+      'Designed PostgreSQL schema, RLS policies, and seed data in Supabase. Implemented authentication, Favorites API, Supabase Realtime live updates, data mappers with unit tests, routing, responsive header with burger menu, About Us and public Gallery pages, artwork modal with image slider, light/dark theme switcher, and EN/RU/BE localization.',
+
+    'about.aliaksei.name': 'Aliaksei',
+    'about.aliaksei.role': 'Frontend & Auction Logic',
+    'about.aliaksei.contrib':
+      'Configured project setup & CI, built core auction business logic with Vitest unit tests, Auction Hall catalog with search and filters, bidding & checkout flow, Personal Cabinet, global footer, and ZOLATA brand identity & favicon.',
+
+    // Profile
+    'profile.loading': 'Loading your profile...',
+    'profile.title': 'Personal Cabinet',
+    'profile.loggedInAs': 'Logged in as',
+    'profile.tabActive': 'Active Bids',
+    'profile.tabHistory': 'Bidding History',
+    'profile.tabPurchases': 'My Purchases',
+    'profile.tabFavorites': 'Favorites',
+    'profile.noPurchases': 'No purchases yet.',
+    'profile.noFavorites': 'No favorites yet.',
+    'profile.noBids': 'You have no bids yet.',
+    'profile.noActiveBids': 'No active bids.',
+    'profile.error': 'Failed to load profile data.',
+
+    // Footer
+    'footer.mission':
+      'Curated contemporary and fine art auctions. Authentic works with verified provenance.',
+    'footer.location': 'Minsk, Belarus',
+    'footer.navTitle': 'Auction & Gallery',
+    'footer.galleryPreview': 'Gallery Preview',
+    'footer.pastAuctions': 'Past Auctions',
+    'footer.servicesTitle': 'Client Services',
+    'footer.howToBid': 'How to Bid',
+    'footer.authentication': 'Authentication & Provenance',
+    'footer.consign': 'Consign an Artwork',
+    'footer.premiumFees': 'Buyer’s Premium & Fees',
+    'footer.contactTitle': 'Contact',
+    'footer.hours': 'Mon–Fri: 10:00 – 18:00',
+    'footer.copy': '© 2026 Art Gallery & Auction. All rights reserved.',
+    'footer.terms': 'Terms of Sale',
+    'footer.privacy': 'Privacy Policy',
+
+    //bidCard
+    'bidCard.myBid': 'My Bid',
+    'bidCard.leading': 'Leading',
+    'bidCard.outbid': 'Outbid',
+    'bidCard.checkout': 'Checkout',
+    'toast.purchaseSuccess': 'Lot purchased successfully!',
+    'toast.purchaseError': 'Failed to complete purchase. Try again.',
+
+    //purchaseCard
+    'purchaseCard.unknownLot': 'Unknown Lot',
+    'purchaseCard.paid': 'Paid',
+    'purchaseCard.promo': 'Promo',
+    'purchaseCard.purchased': 'Purchased',
   },
   ru: {
     // Header & Navigation
@@ -145,6 +208,12 @@ const translations = {
     'lot.closed': 'Закрыт',
     'lot.leading': 'Ваша ставка лидирует',
     'lot.viewDetails': 'Подробнее',
+    'auction.loading': 'Загрузка шедевров...',
+    'auction.sortDefault': 'По умолчанию (сначала активные)',
+    'auction.sortPriceDesc': 'Цена: по убыванию',
+    'auction.sortPriceAsc': 'Цена: по возрастанию',
+    'auction.empty': 'Лоты по вашему запросу не найдены.',
+    'auction.error': 'Не удалось загрузить лоты. Попробуйте позже.',
 
     // Artwork Modal
     'modal.inAuction': 'На аукционе',
@@ -197,6 +266,62 @@ const translations = {
     'toast.favRemoved': 'Удалено из избранного',
     'toast.favError': 'Не удалось обновить избранное',
     'toast.bidSuccess': 'Ставка успешно сделана!',
+
+    // About
+    'about.marina.name': 'Марина',
+    'about.marina.role': 'Fullstack и интеграция с бэкендом',
+    'about.marina.contrib':
+      'Спроектировала схему PostgreSQL, политики безопасности RLS и сиды в Supabase. Реализовала авторизацию, Favorites API, обновления в реальном времени (Supabase Realtime), мапперы данных с юнит-тестами, роутинг, адаптивный хедер с бургер-меню, страницы «О проекте» и публичной галереи, модальное окно лота со слайдером, смену светлой/тёмной темы и мультиязычность (EN/RU/BE).',
+    'about.aliaksei.name': 'Алексей',
+    'about.aliaksei.role': 'Frontend и логика аукциона',
+    'about.aliaksei.contrib':
+      'Настроил сборку и CI, разработал бизнес-логику аукциона с юнит-тестами Vitest, каталог аукционного зала с поиском и фильтрами, процесс ставок и покупки, личный кабинет, глобальный футер и фирменный стиль (логотип и фавикон) ZOLATA.',
+
+    // Profile
+    'profile.loading': 'Загрузка профиля...',
+    'profile.title': 'Личный кабинет',
+    'profile.loggedInAs': 'Вы вошли как',
+    'profile.tabActive': 'Активные ставки',
+    'profile.tabHistory': 'История ставок',
+    'profile.tabPurchases': 'Мои покупки',
+    'profile.tabFavorites': 'Избранное',
+    'profile.noPurchases': 'Покупок пока нет.',
+    'profile.noFavorites': 'В избранном пока пусто.',
+    'profile.noBids': 'У вас пока нет ставок.',
+    'profile.noActiveBids': 'Активных ставок нет.',
+    'profile.error': 'Не удалось загрузить данные профиля.',
+
+    // Footer
+    'footer.mission':
+      'Кураторские аукционы современного и изобразительного искусства. Подлинные работы с проверенным провенансом.',
+    'footer.location': 'Минск, Беларусь',
+    'footer.navTitle': 'Аукцион и галерея',
+    'footer.galleryPreview': 'Обзор галереи',
+    'footer.pastAuctions': 'Прошедшие аукционы',
+    'footer.servicesTitle': 'Клиентский сервис',
+    'footer.howToBid': 'Как делать ставки',
+    'footer.authentication': 'Экспертиза и провенанс',
+    'footer.consign': 'Выставить работу на торги',
+    'footer.premiumFees': 'Комиссия покупателя и сборы',
+    'footer.contactTitle': 'Контакты',
+    'footer.hours': 'Пн–Пт: 10:00 – 18:00',
+    'footer.copy': '© 2026 Art Gallery & Auction. Все права защищены.',
+    'footer.terms': 'Условия продажи',
+    'footer.privacy': 'Политика конфиденциальности',
+
+    //bidCard
+    'bidCard.myBid': 'Моя ставка',
+    'bidCard.leading': 'Лидирует',
+    'bidCard.outbid': 'Перебита',
+    'bidCard.checkout': 'Оформить покупку',
+    'toast.purchaseSuccess': 'Лот успешно куплен!',
+    'toast.purchaseError': 'Не удалось завершить покупку. Попробуйте снова.',
+
+    //purchaseCard
+    'purchaseCard.unknownLot': 'Неизвестный лот',
+    'purchaseCard.paid': 'Оплачено',
+    'purchaseCard.promo': 'Промокод',
+    'purchaseCard.purchased': 'Куплено',
   },
   be: {
     // Header & Navigation
@@ -221,7 +346,7 @@ const translations = {
 
     // Gallery Page
     'gallery.title': 'Мастацкая галерэя',
-    'gallery.subtitle': 'Пастаянная і бягучая экспазіцыя. Вывучыце творы ў дэталях.',
+    'gallery.subtitle': 'Пастаянная і актуальная экспазіцыя. Вывучыце творы ў дэталях.',
     'gallery.ctaAuction': 'У аўкцыённую залу →',
     'gallery.searchPlaceholder': 'Пошук па назве або аўтару...',
     'gallery.allStyles': 'Усе стылі',
@@ -236,12 +361,18 @@ const translations = {
     'auction.allStatuses': 'Усе статусы',
     'auction.statusActive': 'Актыўныя',
     'auction.statusSold': 'Прададзеныя',
-    'lot.currentPrice': 'Бягучая цана',
+    'lot.currentPrice': 'Актуальная цана',
     'lot.placeBid': 'Зрабіць стаўку',
     'lot.sold': 'Прададзена',
     'lot.closed': 'Закрыты',
     'lot.leading': 'Ваша стаўка лідзіруе',
     'lot.viewDetails': 'Падрабязней',
+    'auction.loading': 'Загрузка шэдэўраў...',
+    'auction.sortDefault': 'Па змаўчанні (спачатку актыўныя)',
+    'auction.sortPriceDesc': 'Цана: па змяншэнні',
+    'auction.sortPriceAsc': 'Цана: па ўзрастанні',
+    'auction.empty': 'Лоты па вашым запыце не знойдзены.',
+    'auction.error': 'Не ўдалося загрузіць лоты. Паспрабуйце пазней.',
 
     // Artwork Modal
     'modal.inAuction': 'На аўкцыёне',
@@ -272,7 +403,7 @@ const translations = {
 
     // Bid
     'bid.title': 'Стаўка на',
-    'bid.current': 'Бягучая',
+    'bid.current': 'Актуальная',
     'bid.minStep': 'Мін. крок',
     'bid.cancel': 'Адмена',
     'bid.confirm': 'Пацвердзіць стаўку',
@@ -294,6 +425,62 @@ const translations = {
     'toast.favRemoved': 'Выдалена з абранага',
     'toast.favError': 'Не ўдалося абнавіць абранае',
     'toast.bidSuccess': 'Стаўка паспяхова зроблена!',
+
+    // About
+    'about.marina.name': 'Марына',
+    'about.marina.role': 'Fullstack і інтэграцыя з бэкендам',
+    'about.marina.contrib':
+      'Спраектавала схему PostgreSQL, палітыкі бяспекі RLS і сіды ў Supabase. Рэалізавала аўтарызацыю, Favorites API, абнаўленні ў рэальным часе (Supabase Realtime), маперы даных з юніт-тэстамі, роўтынг, адаптыўны хэдэр з бургер-меню, старонкі «Пра праект» і публічнай галерэі, мадальнае акно лота са слайдэрам, змену светлай/цёмнай тэмы і шматмоўнасць (EN/RU/BE).',
+    'about.aliaksei.name': 'Аляксей',
+    'about.aliaksei.role': 'Frontend і логіка аўкцыёну',
+    'about.aliaksei.contrib':
+      'Наладзіў зборку і CI, распрацаваў бізнес-логіку аўкцыёну з юніт-тэстамі Vitest, каталог аўкцыённай залы з пошукам і фільтрамі, працэс ставак і куплі, асабісты кабінет, глабальны футар і фірмовы стыль (лагатып і фавікон) ZOLATA.',
+
+    // Profile
+    'profile.loading': 'Загрузка профілю...',
+    'profile.title': 'Асабісты кабінет',
+    'profile.loggedInAs': 'Вы ўвайшлі як',
+    'profile.tabActive': 'Актыўныя стаўкі',
+    'profile.tabHistory': 'Гісторыя ставак',
+    'profile.tabPurchases': 'Мае пакупкі',
+    'profile.tabFavorites': 'Абранае',
+    'profile.noPurchases': 'Пакупак пакуль няма.',
+    'profile.noFavorites': 'У абраным пакуль пуста.',
+    'profile.noBids': 'У вас пакуль няма ставак.',
+    'profile.noActiveBids': 'Актыўных ставак няма.',
+    'profile.error': 'Не ўдалося загрузіць даныя профілю.',
+
+    // Footer
+    'footer.mission':
+      'Куратарскія аўкцыёны сучаснага і выяўленчага мастацтва. Сапраўдныя творы з правераным правенансам.',
+    'footer.location': 'Мінск, Беларусь',
+    'footer.navTitle': 'Аўкцыён і галерэя',
+    'footer.galleryPreview': 'Агляд галерэі',
+    'footer.pastAuctions': 'Мінулыя аўкцыёны',
+    'footer.servicesTitle': 'Кліенцкі сэрвіс',
+    'footer.howToBid': 'Як рабіць стаўкі',
+    'footer.authentication': 'Экспертыза і правенанс',
+    'footer.consign': 'Выставіць твор на таргі',
+    'footer.premiumFees': 'Камісія пакупніка і зборы',
+    'footer.contactTitle': 'Кантакты',
+    'footer.hours': 'Пн–Пт: 10:00 – 18:00',
+    'footer.copy': '© 2026 Art Gallery & Auction. Усе правы абаронены.',
+    'footer.terms': 'Умовы продажу',
+    'footer.privacy': 'Палітыка прыватнасці',
+
+    //bidCard
+    'bidCard.myBid': 'Мая стаўка',
+    'bidCard.leading': 'Лідзіруе',
+    'bidCard.outbid': 'Перабіта',
+    'bidCard.checkout': 'Аформіць куплю',
+    'toast.purchaseSuccess': 'Лот паспяхова набыты!',
+    'toast.purchaseError': 'Не ўдалося завяршыць куплю. Паспрабуйце зноў.',
+
+    //purchaseCard
+    'purchaseCard.unknownLot': 'Невядомы лот',
+    'purchaseCard.paid': 'Аплачана',
+    'purchaseCard.promo': 'Промакод',
+    'purchaseCard.purchased': 'Набыта',
   },
 } as const;
 

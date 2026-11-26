@@ -140,7 +140,6 @@ export async function renderGalleryPage(
   try {
     allLots = await fetchLots();
 
-    // Собираем уникальные оригинальные стили и их переведённые названия
     const styleMap = new Map<string, string>();
     allLots.forEach((lot) => {
       if (lot.style && !styleMap.has(lot.style)) {

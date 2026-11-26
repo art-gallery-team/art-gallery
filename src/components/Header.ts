@@ -49,7 +49,6 @@ export function createHeader({ currentPath, user, onNavigate }: HeaderOptions): 
   const authActions = document.createElement('div');
   authActions.className = 'app-header__auth';
 
-  // Селектор языка (EN / RU / BE)
   const langSelect = document.createElement('select');
   langSelect.className = 'app-header__lang-select';
   langSelect.setAttribute('aria-label', 'Select language');
@@ -76,7 +75,6 @@ export function createHeader({ currentPath, user, onNavigate }: HeaderOptions): 
     setLanguage(langSelect.value as Language);
   });
 
-  // Кнопка переключения темы
   const themeBtn = document.createElement('button');
   themeBtn.type = 'button';
   themeBtn.className = 'app-header__btn app-header__btn--outline app-header__theme-btn';
