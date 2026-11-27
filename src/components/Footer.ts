@@ -7,10 +7,21 @@ export function createFooter(onNavigate: (path: string) => void): HTMLElement {
   const container = createElement('div', 'app-footer__container');
 
   const brandCol = createElement('div', 'app-footer__col app-footer__col--brand');
-  const logo = createElement('h2', 'app-footer__logo', 'Art Gallery & Auction');
+  const logoBlock = createElement('div', 'app-footer__logo-block');
+
+  const logoImg = createElement('img', 'app-footer__logo-img');
+  logoImg.src = '/logo.png';
+  logoImg.alt = 'ZOLATA Logo';
+
+  const logoTextWrap = createElement('div', 'app-footer__logo-text');
+  const logoMain = createElement('span', 'app-footer__logo-main', 'ZOLATA');
+  const logoSub = createElement('span', 'app-footer__logo-sub', 'ART GALLERY & AUCTION');
+  logoTextWrap.append(logoMain, logoSub);
+
+  logoBlock.append(logoImg, logoTextWrap);
   const mission = createElement('p', 'app-footer__text', t('footer.mission'));
   const location = createElement('p', 'app-footer__location', t('footer.location'));
-  brandCol.append(logo, mission, location);
+  brandCol.append(logoBlock, mission, location);
 
   const navCol = createElement('div', 'app-footer__col');
   const navTitle = createElement('h3', 'app-footer__title', t('footer.navTitle'));

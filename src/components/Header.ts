@@ -26,7 +26,25 @@ export function createHeader({ currentPath, user, onNavigate }: HeaderOptions): 
   const logo = document.createElement('button');
   logo.type = 'button';
   logo.className = 'app-header__logo';
-  logo.textContent = 'Art Gallery & Auction';
+
+  const logoImg = document.createElement('img');
+  logoImg.src = '/logo.png';
+  logoImg.alt = 'ZOLATA Logo';
+  logoImg.className = 'app-header__logo-img';
+
+  const logoTextWrap = document.createElement('div');
+  logoTextWrap.className = 'app-header__logo-text';
+
+  const logoMain = document.createElement('span');
+  logoMain.className = 'app-header__logo-main';
+  logoMain.textContent = 'ZOLATA';
+
+  const logoSub = document.createElement('span');
+  logoSub.className = 'app-header__logo-sub';
+  logoSub.textContent = 'ART GALLERY & AUCTION';
+
+  logoTextWrap.append(logoMain, logoSub);
+  logo.append(logoImg, logoTextWrap);
 
   const burgerBtn = document.createElement('button');
   burgerBtn.type = 'button';
