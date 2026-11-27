@@ -9,7 +9,11 @@ import { showToast } from './toast';
 import { t } from '../utils/i18n';
 import { getLocalizedLot } from '../utils/lotTranslations';
 
-export function createBidCard(bid: Bid, onCheckoutSuccess: () => void): HTMLElement {
+export function createBidCard(
+  bid: Bid,
+  onCheckoutSuccess: () => void,
+  showCheckout: boolean = true
+): HTMLElement {
   const card = createElement('div', 'bid-card');
   const lot = bid.lots;
   if (!lot) return card;
@@ -43,7 +47,7 @@ export function createBidCard(bid: Bid, onCheckoutSuccess: () => void): HTMLElem
   info.append(myBid, currentPrice, statusBadge);
   card.append(title, author, info);
 
-  if (status === 'leading' && lot.status === 'active') {
+  if (showCheckout && status === 'leading' && lot.status === 'active') {
     const checkoutBtn = createElement('button', 'btn btn--primary', t('bidCard.checkout'));
     checkoutBtn.style.marginTop = '1rem';
     checkoutBtn.style.width = '100%';
