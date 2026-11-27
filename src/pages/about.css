@@ -42,6 +42,7 @@
 }
 
 .about-hero__cta {
+  min-width: 14rem;
   padding: 14px 28px;
   border: 1px solid var(--accent);
   border-radius: 8px;
