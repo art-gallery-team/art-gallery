@@ -44,6 +44,7 @@ export async function renderProfilePage(container: HTMLElement, user: User): Pro
     const historyTabBtn = createElement('button', 'profile-tabs__btn', t('profile.tabHistory'));
     const purchasesTabBtn = createElement('button', 'profile-tabs__btn', t('profile.tabPurchases'));
     const favTabBtn = createElement('button', 'profile-tabs__btn', t('profile.tabFavorites'));
+
     tabsContainer.append(activeTabBtn, favTabBtn, purchasesTabBtn, historyTabBtn);
 
     const listContainer = createElement('div', 'profile-list');
@@ -102,7 +103,20 @@ export async function renderProfilePage(container: HTMLElement, user: User): Pro
           listContainer.append(createBidCard(bid, refreshDataSilently))
         );
       } else {
-        bids.forEach((bid) => listContainer.append(createBidCard(bid, refreshDataSilently, false)));
+        const highestHistoryBids = new Map<string, Bid>();
+        bids.forEach((bid) => {
+          if (!bid.lots) return;
+          const existing = highestHistoryBids.get(bid.lot_id);
+          if (!existing || bid.amount > existing.amount) {
+            highestHistoryBids.set(bid.lot_id, bid);
+          }
+        });
+
+        const uniqueHistoryBids = Array.from(highestHistoryBids.values());
+
+        uniqueHistoryBids.forEach((bid) =>
+          listContainer.append(createBidCard(bid, refreshDataSilently, false, true))
+        );
       }
     };
 
