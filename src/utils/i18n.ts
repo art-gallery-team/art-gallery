@@ -155,6 +155,8 @@ const translations = {
     'bidCard.leading': 'Leading',
     'bidCard.outbid': 'Outbid',
     'bidCard.checkout': 'Checkout',
+    'bidCard.placed': 'Placed',
+    'bidCard.won': 'Won',
     'toast.purchaseSuccess': 'Lot purchased successfully!',
     'toast.purchaseError': 'Failed to complete purchase. Try again.',
 
@@ -314,6 +316,8 @@ const translations = {
     'bidCard.leading': 'Лидирует',
     'bidCard.outbid': 'Перебита',
     'bidCard.checkout': 'Оформить покупку',
+    'bidCard.placed': 'Сделана',
+    'bidCard.won': 'Выиграна',
     'toast.purchaseSuccess': 'Лот успешно куплен!',
     'toast.purchaseError': 'Не удалось завершить покупку. Попробуйте снова.',
 
@@ -473,6 +477,8 @@ const translations = {
     'bidCard.leading': 'Лідзіруе',
     'bidCard.outbid': 'Перабіта',
     'bidCard.checkout': 'Аформіць куплю',
+    'bidCard.placed': 'Зроблена',
+    'bidCard.won': 'Выйграна',
     'toast.purchaseSuccess': 'Лот паспяхова набыты!',
     'toast.purchaseError': 'Не ўдалося завяршыць куплю. Паспрабуйце зноў.',
 
