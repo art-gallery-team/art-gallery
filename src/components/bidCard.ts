@@ -6,7 +6,7 @@ import { openCheckoutModal } from './checkoutModal';
 import { purchaseLot } from '../api/purchasesApi';
 import { getCurrentUser } from '../api/authApi';
 import { showToast } from './toast';
-import { t } from '../utils/i18n';
+import { t, getSavedLanguage } from '../utils/i18n';
 import { getLocalizedLot } from '../utils/lotTranslations';
 
 export function createBidCard(
@@ -40,7 +40,7 @@ export function createBidCard(
   );
 
   const dateObj = new Date(bid.created_at);
-  const dateStr = dateObj.toLocaleDateString(undefined, {
+  const dateStr = dateObj.toLocaleDateString(getSavedLanguage(), {
     day: 'numeric',
     month: 'short',
     year: 'numeric',
