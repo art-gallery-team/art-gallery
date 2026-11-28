@@ -116,7 +116,7 @@ const translations = {
     'about.aliaksei.name': 'Aliaksei',
     'about.aliaksei.role': 'Frontend & Auction Logic',
     'about.aliaksei.contrib':
-      'Configured project setup & CI, built core auction business logic with Vitest unit tests, Auction Hall catalog with search and filters, bidding & checkout flow, Personal Cabinet, global footer, and ZOLATA brand identity & favicon.',
+      'Configured project setup & CI/CD (Vite, TypeScript, ESLint, Husky, GitHub Actions). Built core auction business logic with Vitest TDD (bid validation, checkout with promo codes, filtering, currency formatting). Developed custom APIs (lots, bids, purchases) and a custom debounce utility. Implemented the Auction Hall UI with search/sorting, bidding & checkout modals, the Personal Cabinet, Favorites UI integration, and Realtime-driven UI updates. Created the ZOLATA brand identity, global footer, and toast notification system.',
 
     // Profile
     'profile.loading': 'Loading your profile...',
@@ -277,7 +277,7 @@ const translations = {
     'about.aliaksei.name': 'Алексей',
     'about.aliaksei.role': 'Frontend и логика аукциона',
     'about.aliaksei.contrib':
-      'Настроил сборку и CI, разработал бизнес-логику аукциона с юнит-тестами Vitest, каталог аукционного зала с поиском и фильтрами, процесс ставок и покупки, личный кабинет, глобальный футер и фирменный стиль (логотип и фавикон) ZOLATA.',
+      'Настроил сборку и CI/CD (Vite, TypeScript, ESLint, Husky, GitHub Actions). Разработал бизнес-логику аукциона по TDD с юнит-тестами Vitest (валидация ставок, расчет чека с промокодами, фильтрация). Написал API для работы с лотами, ставками и покупками, а также кастомную утилиту debounce. Реализовал каталог Аукционного зала с поиском и сортировкой, модалки ставок и оформления покупки (Checkout), Личный кабинет, интеграцию интерфейса Избранного и обновление UI на основе Realtime. Создал фирменный стиль ZOLATA (логотип, фавикон), глобальный футер и систему уведомлений (тосты).',
 
     // Profile
     'profile.loading': 'Загрузка профиля...',
@@ -438,7 +438,7 @@ const translations = {
     'about.aliaksei.name': 'Аляксей',
     'about.aliaksei.role': 'Frontend і логіка аўкцыёну',
     'about.aliaksei.contrib':
-      'Наладзіў зборку і CI, распрацаваў бізнес-логіку аўкцыёну з юніт-тэстамі Vitest, каталог аўкцыённай залы з пошукам і фільтрамі, працэс ставак і куплі, асабісты кабінет, глабальны футар і фірмовы стыль (лагатып і фавікон) ZOLATA.',
+      'Наладзіў зборку і CI/CD (Vite, TypeScript, ESLint, Husky, GitHub Actions). Распрацаваў бізнес-логіку аўкцыёну па TDD з юніт-тэстамі Vitest (валідацыя ставак, разлік чэка з промакодамі, фільтрацыя). Напісаў API для працы з лотамі, стаўкамі і куплямі, а таксама кастомную ўтыліту debounce. Рэалізаваў каталог Аўкцыённай залы з пошукам і сартаваннем, мадалкі ставак і афармлення куплі (Checkout), Асабісты кабінет, інтэграцыю інтэрфейсу Абранага і абнаўленне UI на аснове Realtime. Стварыў фірмовы стыль ZOLATA (лагатып, фавікон), глабальны футар і сістэму апавяшчэнняў (тосты).',
 
     // Profile
     'profile.loading': 'Загрузка профілю...',
