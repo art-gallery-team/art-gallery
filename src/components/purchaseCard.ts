@@ -9,17 +9,33 @@ export function createPurchaseCard(purchase: Purchase): HTMLElement {
   const lot = purchase.lots;
 
   if (!lot) {
+    const content = createElement('div', 'bid-card__content');
     const title = createElement('h3', 'bid-card__title', t('purchaseCard.unknownLot'));
     const price = createElement(
       'span',
       'bid-card__my-bid',
       `${t('purchaseCard.paid')}: ${formatCurrency(purchase.final_price)}`
     );
-    card.append(title, price);
+    content.append(title, price);
+    card.append(content);
     return card;
   }
 
   const localized = getLocalizedLot(lot);
+
+  const imgWrapper = createElement('div', 'bid-card__img-wrapper');
+  const img = createElement('img', 'bid-card__image');
+  img.src = lot.imageUrl;
+  img.alt = localized.title;
+  img.loading = 'lazy';
+  img.onerror = () => {
+    img.style.display = 'none';
+    const placeholder = createElement('div', 'bid-card__placeholder', 'Art');
+    imgWrapper.append(placeholder);
+  };
+  imgWrapper.append(img);
+
+  const content = createElement('div', 'bid-card__content');
   const title = createElement('h3', 'bid-card__title', localized.title);
   const author = createElement('p', 'bid-card__author', localized.author);
 
@@ -48,7 +64,9 @@ export function createPurchaseCard(purchase: Purchase): HTMLElement {
   );
 
   info.append(statusBadge);
-  card.append(title, author, info);
+
+  content.append(title, author, info);
+  card.append(imgWrapper, content);
 
   return card;
 }

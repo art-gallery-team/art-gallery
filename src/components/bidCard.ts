@@ -22,6 +22,20 @@ export function createBidCard(
   const localized = getLocalizedLot(lot);
   const status = getUserBidStatus(lot.currentPrice, bid.amount);
 
+  const imgWrapper = createElement('div', 'bid-card__img-wrapper');
+  const img = createElement('img', 'bid-card__image');
+  img.src = lot.imageUrl;
+  img.alt = localized.title;
+  img.loading = 'lazy';
+  img.onerror = () => {
+    img.style.display = 'none';
+    const placeholder = createElement('div', 'bid-card__placeholder', 'Art');
+    imgWrapper.append(placeholder);
+  };
+  imgWrapper.append(img);
+
+  const content = createElement('div', 'bid-card__content');
+
   const title = createElement('h3', 'bid-card__title', localized.title);
   const author = createElement('p', 'bid-card__author', localized.author);
 
@@ -77,7 +91,8 @@ export function createBidCard(
   }
 
   info.append(myBid, currentPrice, statusBadge, bidDate);
-  card.append(title, author, info);
+
+  content.append(title, author, info);
 
   if (showCheckout && status === 'leading' && lot.status === 'active') {
     const checkoutBtn = createElement('button', 'btn btn--primary', t('bidCard.checkout'));
@@ -105,8 +120,10 @@ export function createBidCard(
       }
     });
 
-    card.append(checkoutBtn);
+    content.append(checkoutBtn);
   }
+
+  card.append(imgWrapper, content);
 
   return card;
 }
